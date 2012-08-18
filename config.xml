@@ -4,7 +4,7 @@
         id = "com.whitepawdesign.videre-test"
         version = "1.0.0">
 
-        <name>videre Test</name>
+        <name>Videre Test</name>
 
         <description>
                 A test project for exploring options with project videre. This may end up being forked to videre or may be discarded. Consider this project as a proof of concept.
