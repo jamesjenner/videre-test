@@ -21,10 +21,10 @@
         <icon src="icons/ios/icon_ipad.png" gap:platform="ios" width="72" height="72" />
         <icon src="icons/ios/icon_ios4retina.png" width="114" height="114" />
 
-        <icon src="icons/android/ldpi.png" gap:platform="android" gap:density="ldpi" />
-        <icon src="icons/android/mdpi.png" gap:platform="android" gap:density="mdpi" />
-        <icon src="icons/android/hdpi.png" gap:platform="android" gap:density="hdpi" />
-        <icon src="icons/android/xhdpi.png" gap:platform="android" gap:density="xhdpi" />
+        <icon src="icons/android/icon_ldpi.png" gap:platform="android" gap:density="ldpi" />
+        <icon src="icons/android/icon_mdpi.png" gap:platform="android" gap:density="mdpi" />
+        <icon src="icons/android/icon_hdpi.png" gap:platform="android" gap:density="hdpi" />
+        <icon src="icons/android/icon_xhdpi.png" gap:platform="android" gap:density="xhdpi" />
 
         <feature name="http://api.phonegap.com/1.0/geolocation"/>
 
