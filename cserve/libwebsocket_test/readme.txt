@@ -1,1 +1,0 @@
-This uses the libwebsocket library, which doesn't appear to support the RFC6455. Also the example (as can be seen here) doesn't uprgrade the connection to ws or wss. Uncertain if libwebsocket supports wss.

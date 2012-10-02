@@ -469,7 +469,8 @@ var connection = {};
 function connect() {
   if(window.WebSocket != undefined) {
     if(connection.readyState === undefined || connection.readyState > 1) {
-      connection = new WebSocket('ws://localhost:9007');
+      connection = new WebSocket('ws://localhost:9007', "myProtocol");
+      // connection = new WebSocket('ws://localhost:8095', 'http-only');
 
       connection.binaryType = "arraybuffer";
       connection.onopen = openEvent;
