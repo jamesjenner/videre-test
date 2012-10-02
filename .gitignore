@@ -3,3 +3,6 @@ videre.komodoproject
 
 # binaries
 *.out
+
+# temporary files from editor
+*~
