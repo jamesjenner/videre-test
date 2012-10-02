@@ -1,0 +1,110 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset='UTF-8' />
+    <title>Test SVG</title>
+    <script type='text/javascript' src='assets/js/jquery-1.8.0.min.js'></script>
+    <style>
+.hoversquare div {
+  height:100px;
+  width:100px;
+  border:1px red solid;
+
+  margin:10px auto;
+  text-align:center;
+  -webkit-transition: all 2s ease-in-out;
+  -moz-transition: all 2s ease-in-out;
+  -o-transition: all 2s ease-in-out;
+  transition: all 2s ease-in-out;
+
+}
+
+.clicker {
+    height:50px;
+    width:50px;
+    border:1px black solid;
+    margin:60px auto;
+    text-align: center;
+    background-color:grey;
+}
+
+.clicker:hover {
+    border:1px blue solid;
+    background-color:white;
+}
+
+.hoversquare div:hover, #transDemo2 div.hover_effect {
+  -webkit-transform:rotate(720deg);
+  -moz-transform:rotate(720deg);
+  -o-transform:rotate(720deg);
+  transform:rotate(720deg);
+}
+    </style>
+  </head>
+  <body>
+    <svg id="polysvg1" xmlns="http://www.w3.org/2000/svg" version="1.1" height="200">
+      <g id="polysvg2">
+        <polygon id="polysvg3"
+          points="102,0 105,30 101,100 99,100 95,30 98,0 "
+          style="fill:white;stroke:black;stroke-width:1;fill-rule:evenodd;"/>
+        <animateTransform 
+          id="rotatePolysvg3"
+          type="rotate" 
+          attributeName="transform" 
+          from="0 100 100" 
+          to="180 100 100" 
+          dur="1000ms"
+          fill="freeze"
+          begin="indefinite"/>      
+      </g>
+    </svg>
+
+    <div id="control1" class="clicker"></div>
+
+<script>
+
+var degree = 0;
+var increment = 180;
+
+$('#control1').mousedown(function() {
+
+    // change to stop if the current anim is running, and get the current angle
+
+    // get the animation element
+    var anim = document.getElementById("rotatePolysvg3");
+
+    // stop the animation (in case it is running)
+    anim.endElement();
+    
+    if(degree >= 360) {
+      degree -= 360;
+    }
+    
+    // override the duration
+    anim.setAttribute("dur", "500ms");
+    
+    // set the from angle from the angle it stopped at
+    anim.setAttribute("from", degree + " 50% 50% ");
+    
+    // increment the angle
+    degree += increment;
+    
+    // set the to angle to the desired angle
+    anim.setAttribute("to", degree + " 50% 50% ");
+    
+    // begin the animation
+    anim.beginElement();
+});
+
+$('#control1').mouseup(function() {
+    // get the animation element
+    var anim = document.getElementById("rotatePolysvg3");
+
+    // stop the animation (in case it is running)
+    anim.endElement();
+});
+
+</script>
+
+  </body>
+</html>

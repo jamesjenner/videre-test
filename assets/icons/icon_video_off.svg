@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg id="svg2" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://www.w3.org/2000/svg" height="326.72" width="326.72" version="1.1" xmlns:cc="http://creativecommons.org/ns#" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:dc="http://purl.org/dc/elements/1.1/">
+ <defs id="defs4">
+  <linearGradient id="linearGradient4512">
+   <stop id="stop4514" stop-color="#FFF" stop-opacity="0.91860467" offset="0"/>
+   <stop id="stop4516" stop-color="#FFF" stop-opacity="0" offset="1"/>
+  </linearGradient>
+  <linearGradient id="linearGradient3755">
+   <stop id="stop3757" stop-color="#f5f5f5" offset="0"/>
+   <stop id="stop3759" stop-color="#afafaf" stop-opacity="0.68627453" offset="1"/>
+  </linearGradient>
+  <linearGradient id="linearGradient3761" y2="628.09" xlink:href="#linearGradient3755" gradientUnits="userSpaceOnUse" x2="498.5" y1="397.61" x1="268.03"/>
+  <linearGradient id="linearGradient4544" y2="600.94" xlink:href="#linearGradient4512" gradientUnits="userSpaceOnUse" x2="471.35" gradientTransform="matrix(0.79719997,0,0,0.79719997,73.916307,95.931606)" y1="384.13" x1="254.54"/>
+  <linearGradient id="linearGradient4550" y2="530.95" xlink:href="#linearGradient4512" gradientUnits="userSpaceOnUse" x2="342.97" gradientTransform="matrix(0.79719997,0,0,0.79719997,73.916307,95.931606)" y1="373.32" x1="280.5"/>
+  <filter id="filter4574" height="1.2810307" width="1.1724813" color-interpolation-filters="sRGB" y="-0.14051528" x="-0.086240664">
+   <feGaussianBlur id="feGaussianBlur4576" stdDeviation="7.6954074"/>
+  </filter>
+  <radialGradient id="radialGradient4578" gradientUnits="userSpaceOnUse" cy="335.92" cx="261.48" gradientTransform="matrix(0.94251628,0.2596449,-0.252396,0.9162026,104.34366,-11.241825)" r="125.55">
+   <stop id="stop4558" stop-color="#FFF" stop-opacity="0.91860467" offset="0"/>
+   <stop id="stop4560" stop-color="#FFF" stop-opacity="0" offset="1"/>
+  </radialGradient>
+ </defs>
+ <metadata id="metadata7">
+  <rdf:RDF>
+   <cc:Work rdf:about="">
+    <dc:format>image/svg+xml</dc:format>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:title/>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <g id="layer1" transform="translate(-220.71875,-349)">
+  <path id="path2985" stroke-linejoin="miter" style="enable-background:accumulate;color:#000000;" d="m546.94,512.36c0,89.944-72.914,162.86-162.86,162.86-89.944,0-162.86-72.914-162.86-162.86,0-89.944,72.914-162.86,162.86-162.86,89.944,0,162.86,72.914,162.86,162.86z" fill-rule="nonzero" stroke-dashoffset="0" stroke="#afafaf" stroke-linecap="butt" stroke-miterlimit="1" stroke-dasharray="none" stroke-width="1" fill="url(#linearGradient3761)"/>
+  <path id="path3779" stroke-linejoin="miter" style="enable-background:accumulate;color:#000000;" d="m546.94,512.36c0,89.944-72.914,162.86-162.86,162.86-89.944,0-162.86-72.914-162.86-162.86,0-89.944,72.914-162.86,162.86-162.86,89.944,0,162.86,72.914,162.86,162.86z" fill-rule="nonzero" transform="matrix(-0.92101217,0,0,-0.92101217,737.82549,984.25399)" stroke-dashoffset="0" stroke="#afafaf" stroke-linecap="butt" stroke-miterlimit="1" stroke-dasharray="none" stroke-width="1" fill="url(#linearGradient3761)"/>
+  <path id="path3800" stroke-linejoin="miter" style="enable-background:accumulate;color:#000000;" d="m546.94,512.36c0,89.944-72.914,162.86-162.86,162.86-89.944,0-162.86-72.914-162.86-162.86,0-89.944,72.914-162.86,162.86-162.86,89.944,0,162.86,72.914,162.86,162.86z" fill-rule="nonzero" transform="matrix(-0.90126521,0,0,-0.90126521,730.24105,974.1364)" stroke-dashoffset="0" stroke="#afafaf" stroke-linecap="butt" stroke-miterlimit="1" stroke-dasharray="none" stroke-width="1" fill="#003055"/>
+  <g id="g3011" stroke-linejoin="round" stroke-dashoffset="0" transform="translate(223.89436,335.31398)" stroke="#929292" stroke-dasharray="none" stroke-miterlimit="1" stroke-width="7" fill="none">
+   <path id="rect3022" style="enable-background:accumulate;color:#000000;" d="m58.476,95.36c-1.6531-0.14842-3.3375,0.69537-4.1886,2.2323l-10.437,18.854c-1.1348,2.0492-0.38922,4.5738,1.6823,5.6666l5.8022,3.0565c2.0715,1.0928,4.6331,0.33209,5.7679-1.7172l0.54932-0.99595,27.329,16.038h-12.188c-8.5914,0-15.484,6.9291-15.484,15.523v62.47c0,8.594,6.8927,15.489,15.484,15.489h124.08c8.5914,0,15.518-6.8947,15.518-15.489v-9.9595h19.879v-42.551h-19.879v-9.9595c0-8.594-6.927-15.523-15.518-15.523h-74.742l-55.379-32.489,0.82399-1.4424c1.1348-2.0492,0.38922-4.5738-1.6823-5.6666l-5.8022-3.0565c-0.51788-0.2732-1.0626-0.43133-1.6136-0.4808z" stroke-linecap="butt"/>
+   <path id="rect3026" style="enable-background:accumulate;color:#000000;" d="m263.71,154.64c-0.46768,0-0.91712,0.0713-1.339,0.20606-5.861,2.5212-12.756,6.1156-18.883,9.1353v42.551l18.883,9.2726c0.10668-0.21127,1.0474,0.0346,1.339,0.0687h15.896c2.4232,0,4.3946-1.9376,4.3946-4.3616v-52.511c0-2.424-1.9714-4.3616-4.3946-4.3616z" stroke-linecap="butt"/>
+   <rect id="rect3132" style="enable-background:accumulate;color:#000000;" ry="3.4669" height="33.206" width="65.93" stroke-linecap="round" y="161.85" x="120.24"/>
+  </g>
+  <path id="path3998" opacity="0.42386834" style="enable-background:accumulate;color:#000000;" d="m380.09,374.56c-70.467,0-127.82,56.132-129.78,126.12,15.123,3.4539,31.089,5.3125,47.594,5.3125,78.988,0,145.64-42.352,166.56-100.28-22.692-19.421-52.165-31.156-84.375-31.156z" fill-rule="nonzero" fill="url(#linearGradient4550)"/>
+  <path id="path4535" opacity="0.42386834" style="enable-background:accumulate;color:#000000;" d="m492.53,439.41c-27.007,48.625-87.77,82.531-158.44,82.531-8.0873,0-16.05-0.45411-23.844-1.3125,25.878,13.651,56.582,21.562,89.5,21.562,42.201,0,80.729-13.002,110.16-34.438,0.0288-1.1239,0.0312-2.2442,0.0312-3.375,0-23.673-6.3378-45.859-17.406-64.969z" fill-rule="nonzero" fill="url(#linearGradient4544)"/>
+  <path id="path4552" opacity="0.42386834" style="enable-background:accumulate;color:#000000;" d="m380.09,374.56c-70.467,0-127.82,56.132-129.78,126.12,15.123,3.4539,31.089,5.3125,47.594,5.3125,78.988,0,145.64-42.352,166.56-100.28-22.692-19.421-52.165-31.156-84.375-31.156z" fill-rule="nonzero" filter="url(#filter4574)" fill="url(#radialGradient4578)"/>
+ </g>
+</svg>

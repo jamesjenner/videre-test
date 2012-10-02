@@ -1,7 +1,586 @@
 <!doctype html>
 <html>
   <head>
+    <meta charset='UTF-8' />
+    <title>Videre Test</title>
+    
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <script type='text/javascript' src='assets/js/jquery-1.8.0.min.js'></script>
+    <script type='text/javascript' src='assets/js/jquery-ui-1.8.23.custom.min.js'></script>
+	<script src="assets/js/jquery.touchSwipe.min.js"  type="text/javascript"></script>
+
+<script type='text/javascript'>
+
+/*
+ * Videre UI library v0.1 alpha
+ * Copyright (c) 2012 James G Jenner
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, version 3 of the License.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see http://www.gnu.org/licenses/
+ */
+
+/* 
+ * this detects touch events and changes them to mousedown, mousemove and mouseup 
+ * this is to support dnd
+ * 
+ * ideally, the approach would be to use a hold touch to activate drag mode, and 
+ * then possibly an action to confirm and another to cancel the action
+ *
+ * the problem with html5 dnd is that there is no clear way to cancel or to manage
+ * what triggers the event. It could be better to perform drag and drop manually, 
+ * instead of using the html5 approach.
+ *
+ * Another option is to enable arrangement mode, which would enable drag and drop,
+ * and then it could be disabled. Maybe an option to save arrangements, select 
+ * previously saved arrangements and so on.
+ */
+function touchHandler(event) {
+    var touches = event.changedTouches,
+        first = touches[0],
+        type = "";
+    
+    switch(event.type) {
+        case "touchstart": type = "mousedown"; break;
+        case "touchmove":  type="mousemove"; break;        
+        case "touchend":   type="mouseup"; break;
+        default: return;
+    }
+    
+    var simulatedEvent = document.createEvent("MouseEvent");
+    
+    simulatedEvent.initMouseEvent(type, true, true, window, 1,
+                              first.screenX, first.screenY,
+                              first.clientX, first.clientY, false,
+                              false, false, false, 0/*left*/, null);
+    
+    first.target.dispatchEvent(simulatedEvent);
+    event.preventDefault();
+}
+
+var connected = false;
+var compassEnabled = false;
+var halEnabled = false;
+var videoEnabled = false;
+var speedEnabled = false;
+
+$(document).ready(function() {
+
+  /* $('#toolbar').hide(); */
+
+  $('a.hidetoolbar').click(function() {
+    $('#toolbar').hide("slide", { direction: "right" }, 300);
+    $('#showToolbarControl').show("slide", { direction: "right" }, 300);
+    return false;
+  });
+
+  $('a.showtoolbar').click(function() {
+    $('#toolbar').show("slide", { direction: "right" }, 300);
+    $('#showToolbarControl').hide("slide", { direction: "right" }, 300);
+    return false;
+  });
+
+  $('#toggleHal').click(function() {
+    if(halEnabled) {
+      disableHal();
+    } else {
+      enableHal();
+    }
+    return false;
+  });
+
+  $('#toggleVideo').click(function() {
+    if(videoEnabled) {
+      disableVideo();
+    } else {
+      enableVideo();
+    }
+    return false;
+  });
+
+  $('#toggleSpeed').click(function() {
+    if(speedEnabled) {
+      speedEnabled = !hideSVGInstrumentPanel("toggleSpeed", 'assets/icons/icon_speed_off.svg', 'speedPanel');
+    } else {
+      // enableSpeed();
+      speedEnabled = showSVGInstrumentPanel('speedPanel', 'assets/gauges/speed.svg', 'speed', 'toggleSpeed', 'assets/icons/icon_speed_on.svg', 200, 200);
+    }
+    return false;
+  });
+
+  $('#toggleCompass').click(function() {
+    if(compassEnabled) {
+      compassEnabled = !hideSVGInstrumentPanel("toggleCompass", 'assets/icons/icon_compass_off.svg', 'compassPanel');
+    } else {
+      // enableSpeed();
+      compassEnabled = showSVGInstrumentPanel('compassPanel', 'assets/gauges/compass.svg', 'compass', 'toggleCompass', 'assets/icons/icon_compass_on.svg', 200, 200);
+    }
+    return false;
+  });
+  
+  $('#toggleConnection').click(function() {
+    if(connected) {
+      disconnect();
+    } else {
+      connect();
+    }
+    return false;
+  });
+
+  $('#toolbarAccess').swipe({
+    swipeStatus:function(event, phase, direction, distance, fingerCount) {
+      toolbarDisplay(direction, phase, distance);
+    },
+    trigerOnTouchEnd:false,
+    threshold:null,
+    fingers:'all'
+  });
+
+});
+
+var toolbarHidden = true;
+
+function toolbarDisplay(direction, phase, distance) {
+  // it is apparent that the start phase often doesn't have direction
+  
+  switch(phase) {
+    case "start":   // swipe has started
+      if(toolbarHidden) {
+        // make bar active
+        $('#toolbarAccessBar').toggleClass('toolbarAccessBarActive');
+
+        // animate bar
+        $('#toolbarControl').animate({
+          'right': '+=100px'
+        }, 300, function() {
+          $('#toolbarAccessBar').toggleClass('toolbarAccessBarActive');
+          toolbarHidden = false;
+        });
+      } else {
+        $('#toolbarAccessBar').toggleClass('toolbarAccessBarActive');
+        
+        $('#toolbarControl').animate({
+          'right': '-=100px'
+        }, 300, function() {
+          $('#toolbarAccessBar').toggleClass('toolbarAccessBarActive');
+          toolbarHidden = true;
+        });
+      }
+      break;
+      
+    case "cancel":  // swipe has been cancelled (didn't travel far enough)
+      break;
+    
+    case "end":     // swipe is successful
+      break;
+      
+    case "move":    // swipe is moving
+      break;
+    
+  }
+}
+
+
+function enableHal() {
+  $('#toggleHal').children('img').attr('src', 'assets/icons/hal_on.svg');
+  halEnabled = true;
+
+  // lets play with the direction
+
+  setInstrument('compass', 'needle', 176);
+}
+
+var angle = 0;
+var timer;
+
+function disableHal() {
+  
+  
+  $('#toggleHal').children('img').attr('src', 'assets/icons/hal_off.svg');
+  halEnabled = false;
+  
+  var degree = 1.615;
+  var value = 1.615 * 100;
+  setInstrument('speed', 'needle', 45);
+
+}
+
+function enableVideo() {
+  $('#toggleVideo').children('img').attr('src', 'assets/icons/icon_video_on.svg');
+  videoEnabled = true;
+  
+  // if the video panel doesn't exist then add it
+  if ($('#videoPanel').length <= 0) {
+    $(document.body).append('<div id="videoPanel" class="viewPanel"><span>Video</span></div>');
+    // add the touch handler for dragging
+    
+    // todo: see if the swipe plugin can be used instead
+    
+    
+    /* bind doesn't work, but the add event listener does, uncertain why, suspect it's related to bubbling
+    
+    // jquery doesn't support adEventListener apparently due to IE before v9 not supporting addEventListener 
+    $('#videoPanel').bind("touchstart", touchHandler);
+    $('#videoPanel').bind("touchmove", touchHandler);
+    $('#videoPanel').bind("touchend", touchHandler);
+    $('#videoPanel').bind("touchcancel", touchHandler);
+    
+    */
+
+    document.getElementById("videoPanel").addEventListener("touchstart", touchHandler, true);
+    document.getElementById("videoPanel").addEventListener("touchmove", touchHandler, true);
+    document.getElementById("videoPanel").addEventListener("touchend", touchHandler, true);
+    document.getElementById("videoPanel").addEventListener("touchcancel", touchHandler, true);
+
+    // todo: only set to draggable based on condition
+    // set it draggable
+    $("#videoPanel").draggable({
+      grid: [5, 5],
+      containment: 'parent',
+      opacity: 0.50,
+      snap: true,
+      snapMode: 'outer',
+      snapTolerance: 5,
+      revert:false
+    });
+
+    // as we are creating it, set the position to top left
+    $('#videoPanel').css({
+	  position: 'absolute',
+	  'z-index': 50,
+      top : '5px',
+      left : '5px'
+	});
+  }
+  
+  // show the panel 
+  // todo: add animation
+  $('#videoPanel').show();
+}
+
+function disableVideo() {
+  $('#toggleVideo').children('img').attr('src', 'assets/icons/icon_video_off.svg');
+
+  // hide the panel
+  // todo: add animation
+  $('#videoPanel').hide();
+  
+  videoEnabled = false;
+}
+
+/*
+ * 
+ * for example:
+ *
+ * showSVGInstrumentPanel('speedPanel', 'assets/gauges/speed.svg', 'speed', 'toggleSpeed', 'assets/icons/icon_speed_on.svg', 200, 200)
+ *
+ * returns true if the panel is sucessfully displayed
+ */
+
+function showSVGInstrumentPanel(panelId, panelSVG, panelName, controlId, controlOnSVG, initialPanelWidth, initialPanelHeight) {
+  $('#' + controlId).children('img').attr('src', controlOnSVG);
+  
+  // if the panel doesn't exist then add it
+  if ($('#' + panelId).length <= 0) {
+    // create the div with the appropriate svg
+    $(document.body).append('<div ' +
+      'id="' + panelId + '"' +
+      'class="viewPanel">' +
+      '<embed id="instrument' + panelName + '" class="gaugeImage" src="' + panelSVG + '" width="200" height="200" type="image/svg+xml" />' +
+      // when not using img to load the svg, need to overlay a transparent div so drag'n'drop will still work
+      '<div id="gauge_' + panelName + 'Drag" class="gaugeDrag" width="' + initialPanelWidth + '" height="' + initialPanelHeight + '" />' +
+      '</div>');
+
+    panelElement = document.getElementById(panelId);
+      
+    // add the touch handler for dragging
+    panelElement.addEventListener("touchstart", touchHandler, true);
+    panelElement.addEventListener("touchmove", touchHandler, true);
+    panelElement.addEventListener("touchend", touchHandler, true);
+    panelElement.addEventListener("touchcancel", touchHandler, true);
+
+    // todo: only set to draggable based on condition
+    // set it draggable
+    // test if we can use panelElement instead of searching for it again
+    $("#" + panelId).draggable({
+      grid: [5, 5],
+      containment: 'parent',
+      opacity: 0.50,
+      snap: true,
+      snapMode: 'outer',
+      snapTolerance: 5,
+      revert:false
+    });
+
+    // as we are creating it, set the position to top left
+    $('#' + panelId).css({
+	  position: 'absolute',
+	  'z-index': 50,
+      top : '5px',
+      left : '5px'
+	});
+  }
+  
+  // show the panel 
+  // todo: add animation
+  $('#' + panelId).show();
+  
+  return true;
+}
+
+/*
+ * hideSVGInstrumentPanel() - disables a panel based on a toggle control and uses SVG for the contents
+ *
+ * controlId: the id for the control element for turning on and off the panel
+ * controlOffSVG: the SVG used to show the control turned off
+ * panelId: the id for the panel that is being hidden
+ *
+ * returns true if panel is hidden
+ * 
+ * Example:
+ * speedEnabled = !hideSVGInstrumentPanel("toggleSpeed", 'assets/icons/icon_speed_off.svg', 'speedPanel')
+ */
+function hideSVGInstrumentPanel(controlId, controlOffSVG, panelId) {
+  $('#' + controlId).children('img').attr('src', controlOffSVG);
+
+  // hide the panel
+  // todo: add animation
+  $('#' + panelId).hide();
+  
+  return true;
+}
+
+/*
+ * setInstrument()
+ *
+ * example:
+ *
+  // angle was calculated roughly from image, may need adjustment
+  var degree = 1.615;
+  var value = 1.615 * 100;
+ * setInstrument('speed', 'needle', myWidgetAngle, 45)
+ */
+function setInstrument(panelId, needleId, newAngle) {
+  // lets play with the speed
+  var svg = document.querySelectorAll('#instrument' + panelId)[0].getSVGDocument().rootElement;
+  var needleGroup = svg.getElementById(needleId);
+  var currentAngle = 0; 
+  var direction = 1;  // default positive
+  
+  // reset the timer if it's running, we have a new value
+  /* using a setInterval...
+  if(timer !== null) {
+      clearInterval(timer);
+      timer = null;
+  }
+  */
+
+  if (needleGroup.transform.baseVal.numberOfItems > 0) {
+    currentAngle = needleGroup.transform.baseVal.getItem(needleGroup.transform.baseVal.numberOfItems - 1).angle;
+  }
+  
+      
+  // check if we need to go forward or backward
+  if (currentAngle <= newAngle) {
+    direction = 1;
+  } else {
+    direction = -1;
+  }
+  
+  if(currentAngle == newAngle) {
+    return;
+  }
+  
+  console.log("starting anim loop now");
+  // setup the animation loop
+  (function animloop() {
+      // console.log("render() should be done here and now");
+      var angle = 0;
+      
+      if (needleGroup.transform.baseVal.numberOfItems > 0) {
+	angle = needleGroup.transform.baseVal.getItem(needleGroup.transform.baseVal.numberOfItems - 1).angle;
+      }
+      
+      angle += direction;
+
+      
+      if(angle >= newAngle) {
+	// angle acheived, cancel the request anim frame
+	console.log("angle: " + angle + " new angle:" + newAngle + " canceling request: " + request);
+	cancelRequestAnimFrame(request);
+	return;
+      }
+      
+      if(angle >= 360) {
+	angle -= 360;
+      }
+      
+      if (needleGroup.transform.baseVal.numberOfItems === 0 || (needleGroup.transform.baseVal.numberOfItems == 1 && needleGroup.transform.baseVal.type === SVGTransform.SVG_TRANSFORM_MATRIX)) {
+	var transform = svg.createSVGTransform();
+	transform.setRotate(angle, parseFloat(svg.getAttribute('width')) / 2, parseFloat(svg.getAttribute('height')) / 2);
+	needleGroup.transform.baseVal.appendItem(transform);
+      } else {
+	needleGroup.transform.baseVal.getItem(needleGroup.transform.baseVal.numberOfItems - 1).setRotate(angle, parseFloat(svg.getAttribute('width')) / 2, parseFloat(svg.getAttribute('height')) / 2);
+      }
+      
+      request = requestAnimFrame(animloop, document.getElementsByTagName('body'));
+      
+      console.log("angle: " + angle + " new angle:" + newAngle + " request: " + request);
+     
+  })();
+  
+}
+
+// shim layer with setTimeout fallback, originally by Paul Irish
+window.requestAnimFrame = (function(){
+    return  window.requestAnimationFrame   || 
+        window.webkitRequestAnimationFrame || 
+        window.mozRequestAnimationFrame    || 
+        window.oRequestAnimationFrame      || 
+        window.msRequestAnimationFrame     || 
+        function(/* function */ callback, /* DOMElement */ element){
+            return window.setTimeout(callback, 1000 / 60);
+        };
+})();
+
+// shim layer for cancel, derived from Paul Irish, by Jerome Etienne Notes
+window.cancelRequestAnimFrame = ( function() {
+    return window.cancelAnimationFrame           ||
+        window.webkitCancelRequestAnimationFrame ||
+        window.mozCancelRequestAnimationFrame    ||
+        window.oCancelRequestAnimationFrame      ||
+        window.msCancelRequestAnimationFrame     ||
+        clearTimeout
+} )();  
+  
+
+/* connection logic for websockets */
+
+var connection = {};
+
+function connect() {
+  if(window.WebSocket != undefined) {
+    if(connection.readyState === undefined || connection.readyState > 1) {
+      connection = new WebSocket('ws://localhost:9007');
+
+      connection.binaryType = "arraybuffer";
+      connection.onopen = openEvent;
+      connection.onmessage = messageEvent;
+      connection.onclose = closeEvent;
+      connection.onerror = errorEvent;
+    }
+  }
+}
+
+function disconnect() {
+  connection.close();
+}
+
+function openEvent(event) {
+  console.log(event);
+  connected = true;
+  // $(this).children('img').attr('src', 'assets/icons/icon_power_on.svg');
+  $('#toggleConnection').children('img').attr('src', 'assets/icons/icon_power_on.svg');
+}
+
+function closeEvent(event) {
+  console.log(event);
+  connected = false;
+  // $(this).children('img').attr('src', 'assets/icons/icon_power_off.svg');
+  $('#toggleConnection').children('img').attr('src', 'assets/icons/icon_power_off.svg');
+}
+
+function messageEvent(event) {
+  // var chatdiv = document.getElementById('chat');
+  // chatdiv.innerHTML = chatdiv.innerHTML + event.data + "<br />";
+
+  if(event.data instanceof ArrayBuffer) {
+    console.log(event);
+/*
+    var bytearray = new Uint8Array(event.data);
+
+    var tempcanvas = document.createElement('canvas');
+        tempcanvas.height = imageheight;
+        tempcanvas.width = imagewidth;
+    var tempcontext = tempcanvas.getContext('2d');
+
+    var imgdata = tempcontext.getImageData(0,0,imagewidth,imageheight);
+
+    var imgdatalen = imgdata.data.length;
+
+    for (var i=8; i < imgdatalen; i++) {
+      imgdata.data[i] = bytearray[i];
+    }
+
+    tempcontext.putImageData(imgdata,0,0);
+
+    var img = document.createElement('img');
+        img.height = imageheight;
+        img.width = imagewidth;
+        img.src = tempcanvas.toDataURL();
+
+    chatdiv.appendChild(img);
+    chatdiv.innerHTML = chatdiv.innerHTML + '<br/>';
+*/
+  } else {
+    console.log(event, event.data);
+  }
+}
+
+function errorEvent(event) {
+  console.log(event);
+  // document.getElementById('chat').innerHTML = "There was an error: " + event.data;
+}
+
+function sendMessage() {
+  var messageText = "blah";
+  // var messageText = = document.getElementById('chatmessage').value;
+  // messageText = username + ": " + messageText;
+  connection.send(messageText);
+}
+
+
+
+</script>
+  
+  
   </head>
   <body>
+        <div id="toolbarControl" class="toolbarControl">
+            <div id="toolbar" class="toolbar">
+              <a href=# id="toggleConnection" class="toolbarButton">
+                <img class=toolbarButtonImage src="assets/icons/icon_power_off.svg"/>
+              </a>
+              <a href=# id="toggleCompass" class="toolbarButton">
+                <img class="toolbarButtonImage" src="assets/icons/icon_compass_off.svg" />
+              </a>
+              <a href=# id="toggleHal" class="toolbarButton">
+                <img class="toolbarButtonImage" src="assets/icons/hal_off.svg" />
+              </a>
+              <a href=# id="toggleVideo" class="toolbarButton">
+                <img class="toolbarButtonImage" src="assets/icons/icon_video_off.svg" />
+              </a>
+              <a href=# id="toggleSpeed" class="toolbarButton gaugeIconTitle">
+                <img class="toolbarButtonImage" src="assets/icons/icon_speed_off.svg" />
+                <!-- <div class="gaugeIconTitle">Speed</div> -->
+                Speed
+              </a>
+            </div>
+            <div id="toolbarAccess" class="toolbarAccess">
+                <div id="toolbarButtonImage" class="toolbarAccessBar toolbarAccessBarInactive">
+                </div>
+            </div>
+        </div>
+        <article>
+          <p>background widget goes here...</p>
+        </article>
   </body>
 </html>

@@ -1,0 +1,72 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset='UTF-8' />
+    <title>Test SVG</title>
+    <script type='text/javascript' src='assets/js/jquery-1.8.0.min.js'></script>
+    <style>
+.clicker {
+    height:50px;
+    width:50px;
+    border:1px black solid;
+    margin:60px auto;
+    text-align: center;
+    background-color:grey;
+}
+
+.clicker:hover {
+    border:1px blue solid;
+    background-color:white;
+}
+    </style>
+  </head>
+  <body>
+    
+<svg id="polysvg1" xmlns="http://www.w3.org/2000/svg" version="1.1" height="200">
+  <g id="polysvg2">
+    <polygon id="polysvg3"
+      points="102,0 105,30 101,100 99,100 95,30 98,0 "
+      style="fill:white;stroke:black;stroke-width:1;fill-rule:evenodd;"/>      
+  </g>
+</svg>
+
+<div id="control1" class="clicker"></div>
+
+<script>
+
+var angle = 0;
+
+var timer;
+var anim = document.getElementById("polysvg3");
+
+$('#control1').mousedown(function() {
+
+    if(timer !== null) {
+        clearInterval(timer);
+        timer = null;
+    }
+    
+    // change to stop if the current anim is running, and get the current angle
+    timer = setInterval( function() {
+        angle += 1;
+        
+        if(angle >= 360) {
+          angle -= 360;
+        }
+        
+        anim.setAttribute('transform', 'rotate(' + angle + ' 100 100)');
+    }, 1);
+    
+});
+
+$('#control1').mouseup(function() {
+    // stop the animation (in case it is running)
+    clearInterval(timer);
+    timer = null;
+    console.log('final angle is ' + angle);
+});
+
+</script>
+
+  </body>
+</html>
