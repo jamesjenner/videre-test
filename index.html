@@ -111,7 +111,7 @@ $(document).ready(function() {
       speedEnabled = !hideSVGInstrumentPanel("toggleSpeed", 'assets/icons/icon_speed_off.svg', 'speedPanel');
     } else {
       // enableSpeed();
-      speedEnabled = showSVGInstrumentPanel('speedPanel', 'assets/gauges/speed.svg', 'speed', 'toggleSpeed', 'assets/icons/icon_speed_on.svg', 200, 200);
+      speedEnabled = showSVGInstrumentPanel('speedPanel', 'assets/gauges/speed.svg', 'speed', 'toggleSpeed', 'assets/icons/icon_speed_on.svg', '100%', '100%');
     }
     return false;
   });
@@ -121,7 +121,7 @@ $(document).ready(function() {
       compassEnabled = !hideSVGInstrumentPanel("toggleCompass", 'assets/icons/icon_compass_off.svg', 'compassPanel');
     } else {
       // enableSpeed();
-      compassEnabled = showSVGInstrumentPanel('compassPanel', 'assets/gauges/compass.svg', 'compass', 'toggleCompass', 'assets/icons/icon_compass_on.svg', 200, 200);
+      compassEnabled = showSVGInstrumentPanel('compassPanel', 'assets/gauges/compass.svg', 'compass', 'toggleCompass', 'assets/icons/icon_compass_on.svg', '100%', '100%');
     }
     return false;
   });
@@ -285,7 +285,13 @@ function disableVideo() {
  * returns true if the panel is sucessfully displayed
  */
 
-function showSVGInstrumentPanel(panelId, panelSVG, panelName, controlId, controlOnSVG, initialPanelWidth, initialPanelHeight) {
+function showSVGInstrumentPanel(panelId, panelSVG, panelName, controlId, controlOnSVG, panelWidth, panelHeight, x, y) {
+  // default values
+  panelWidth = (typeof optionalArg === "undefined") ? '100%' : panelWidth;
+  panelHeight = (typeof optionalArg === "undefined") ? '100%' : panelHeight;
+  x = (typeof optionalArg === "undefined") ? '100px' : x;
+  y = (typeof optionalArg === "undefined") ? '100px' : y;
+
   $('#' + controlId).children('img').attr('src', controlOnSVG);
   
   // if the panel doesn't exist then add it
@@ -294,9 +300,9 @@ function showSVGInstrumentPanel(panelId, panelSVG, panelName, controlId, control
     $(document.body).append('<div ' +
       'id="' + panelId + '"' +
       'class="viewPanel">' +
-      '<embed id="instrument' + panelName + '" class="gaugeImage" src="' + panelSVG + '" width="200" height="200" type="image/svg+xml" />' +
+      '<embed id="instrument' + panelName + '" class="gaugeImage" src="' + panelSVG + '" width="' + panelWidth + '" height="' + panelHeight + '" type="image/svg+xml" />' +
       // when not using img to load the svg, need to overlay a transparent div so drag'n'drop will still work
-      '<div id="gauge_' + panelName + 'Drag" class="gaugeDrag" width="' + initialPanelWidth + '" height="' + initialPanelHeight + '" />' +
+      '<div id="gauge_' + panelName + 'Drag" class="gaugeDrag" width="' + panelWidth + '" height="' + panelHeight + '" />' +
       '</div>');
 
     panelElement = document.getElementById(panelId);
