@@ -158,8 +158,8 @@ a.toolbarButton {
 }
 
 .viewPanel {
-	width: 100px;
-	height: 100px;
+	width: 150px;
+	height: 150px;
 	margin: 5px;
         z-index: 299;
 	background-color:#FCFCFC;
