@@ -158,16 +158,17 @@ a.toolbarButton {
 }
 
 .viewPanel {
-	width: 200px;
-	height: 200px;
+	width: 100px;
+	height: 100px;
 	margin: 5px;
         z-index: 299;
 	background-color:#FCFCFC;
 	font-weight: normal;
 	font-size: 10px;
 	color: #000000;
-	border:1px solid #CACACA;
-        box-shadow: 0px 5px 10px #CACACA;
+/*	border:1px solid #CACACA; */
+/*        box-shadow: 0px 5px 10px #CACACA; */
+        box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.36);
 	-moz-border-radius: 10px;
 	-webkit-border-radius: 10px;
 	border-radius:10px;
