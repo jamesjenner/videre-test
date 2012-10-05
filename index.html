@@ -99,16 +99,18 @@ $(document).ready(function() {
 
   $('#toggleVideo').click(function() {
     if(videoEnabled) {
-      disableVideo();
+      // disableVideo();
+      videoEnabled = !hideInstrumentPanel('toggleVideo', 'assets/icons/icon_video_off.png', 'videoPanel');
     } else {
-      enableVideo();
+      // enableVideo();
+      videoEnabled = showPNGInstrumentPanel('videoPanel', 'assets/gauges/speed_background.png', 'assets/gauges/speed_foreground.png', 'assets/gauges/speed_needle.png', 'video', 'toggleVideo', 'assets/icons/icon_video_on.png', '100%', '100%');
     }
     return false;
   });
 
   $('#toggleSpeed').click(function() {
     if(speedEnabled) {
-      speedEnabled = !hideSVGInstrumentPanel("toggleSpeed", 'assets/icons/icon_speed_off.svg', 'speedPanel');
+      speedEnabled = !hideInstrumentPanel("toggleSpeed", 'assets/icons/icon_speed_off.svg', 'speedPanel');
     } else {
       // enableSpeed();
       speedEnabled = showSVGInstrumentPanel('speedPanel', 'assets/gauges/speed.svg', 'speed', 'toggleSpeed', 'assets/icons/icon_speed_on.svg', '100%', '100%');
@@ -118,7 +120,7 @@ $(document).ready(function() {
 
   $('#toggleCompass').click(function() {
     if(compassEnabled) {
-      compassEnabled = !hideSVGInstrumentPanel("toggleCompass", 'assets/icons/icon_compass_off.svg', 'compassPanel');
+      compassEnabled = !hideInstrumentPanel("toggleCompass", 'assets/icons/icon_compass_off.svg', 'compassPanel');
     } else {
       // enableSpeed();
       compassEnabled = showSVGInstrumentPanel('compassPanel', 'assets/gauges/compass.svg', 'compass', 'toggleCompass', 'assets/icons/icon_compass_on.svg', '100%', '100%');
@@ -194,7 +196,6 @@ function enableHal() {
   halEnabled = true;
 
   // lets play with the direction
-
   setInstrument('compass', 'needle', 176);
 }
 
@@ -209,6 +210,8 @@ function disableHal() {
   
   var degree = 1.615;
   var value = 1.615 * 100;
+  
+  setInstrumentPng('video', 'needle', 98, '1s');
   setInstrument('speed', 'needle', 45);
 
 }
@@ -285,6 +288,74 @@ function disableVideo() {
  * returns true if the panel is sucessfully displayed
  */
 
+function showPNGInstrumentPanel(panelId, panelBackgroundImg, panelForegroundImg, panelNeedleImg, panelName, controlId, controlOn, panelWidth, panelHeight, x, y) {
+  // default values
+  panelWidth = (typeof optionalArg === "undefined") ? '100%' : panelWidth;
+  panelHeight = (typeof optionalArg === "undefined") ? '100%' : panelHeight;
+  x = (typeof optionalArg === "undefined") ? '100px' : x;
+  y = (typeof optionalArg === "undefined") ? '100px' : y;
+
+  $('#' + controlId).children('img').attr('src', controlOn);
+  
+  // if the panel doesn't exist then add it
+  if ($('#' + panelId).length <= 0) {
+    // create the div with the appropriate images
+			    
+    // NOTE: when not using img to load the svg, need to overlay a transparent div so drag'n'drop will still work, don't really need it here
+    // TODO: check removing the drag div
+    $(document.body).append('<div ' + 'id="' + panelId + '" class="viewPanel">' +
+      '<img id="instrument' + panelName + '_background" class="gaugePng gaugeBackground" src="' + panelBackgroundImg + '" width="' + panelWidth + '" height="' + panelHeight + '" />' +
+      '<img id="instrument' + panelName + '_needle"     class="gaugePng gaugeNeedle"     src="' + panelNeedleImg     + '" width="' + panelWidth + '" height="' + panelHeight + '" />' +
+      '<img id="instrument' + panelName + '_foreground" class="gaugePng gaugeForeground" src="' + panelForegroundImg + '" width="' + panelWidth + '" height="' + panelHeight + '" />' +
+      '<div id="gauge_' + panelName + 'Drag" class="gaugeDrag" width="' + panelWidth + '" height="' + panelHeight + '" />' +
+      '</div>');
+     
+    panelElement = document.getElementById(panelId);
+      
+    // add the touch handler for dragging
+    panelElement.addEventListener("touchstart", touchHandler, true);
+    panelElement.addEventListener("touchmove", touchHandler, true);
+    panelElement.addEventListener("touchend", touchHandler, true);
+    panelElement.addEventListener("touchcancel", touchHandler, true);
+
+    // todo: only set to draggable based on condition
+    // set it draggable
+    // test if we can use panelElement instead of searching for it again
+    $("#" + panelId).draggable({
+      grid: [5, 5],
+      containment: 'parent',
+      opacity: 0.50,
+      snap: true,
+      snapMode: 'outer',
+      snapTolerance: 5,
+      revert:false
+    });
+
+    // as we are creating it, set the position to top left
+    $('#' + panelId).css({
+	  position: 'absolute',
+	  'z-index': 50,
+      top : x,
+      left : y
+	});
+  }
+  
+  // show the panel 
+  // todo: add animation
+  $('#' + panelId).show();
+  
+  return true;
+}
+
+/*
+ * 
+ * for example:
+ *
+ * showSVGInstrumentPanel('speedPanel', 'assets/gauges/speed.svg', 'speed', 'toggleSpeed', 'assets/icons/icon_speed_on.svg', 200, 200)
+ *
+ * returns true if the panel is sucessfully displayed
+ */
+
 function showSVGInstrumentPanel(panelId, panelSVG, panelName, controlId, controlOnSVG, panelWidth, panelHeight, x, y) {
   // default values
   panelWidth = (typeof optionalArg === "undefined") ? '100%' : panelWidth;
@@ -330,8 +401,8 @@ function showSVGInstrumentPanel(panelId, panelSVG, panelName, controlId, control
     $('#' + panelId).css({
 	  position: 'absolute',
 	  'z-index': 50,
-      top : '5px',
-      left : '5px'
+      top : x,
+      left : y
 	});
   }
   
@@ -343,7 +414,7 @@ function showSVGInstrumentPanel(panelId, panelSVG, panelName, controlId, control
 }
 
 /*
- * hideSVGInstrumentPanel() - disables a panel based on a toggle control and uses SVG for the contents
+ * hideInstrumentPanel() - disables a panel based on a toggle control and uses SVG for the contents
  *
  * controlId: the id for the control element for turning on and off the panel
  * controlOffSVG: the SVG used to show the control turned off
@@ -352,9 +423,9 @@ function showSVGInstrumentPanel(panelId, panelSVG, panelName, controlId, control
  * returns true if panel is hidden
  * 
  * Example:
- * speedEnabled = !hideSVGInstrumentPanel("toggleSpeed", 'assets/icons/icon_speed_off.svg', 'speedPanel')
+ * speedEnabled = !hideInstrumentPanel("toggleSpeed", 'assets/icons/icon_speed_off.svg', 'speedPanel')
  */
-function hideSVGInstrumentPanel(controlId, controlOffSVG, panelId) {
+function hideInstrumentPanel(controlId, controlOffSVG, panelId) {
   $('#' + controlId).children('img').attr('src', controlOffSVG);
 
   // hide the panel
@@ -443,6 +514,36 @@ function setInstrument(panelId, needleId, newAngle) {
      
   })();
   
+}
+
+/*
+ * setInstrument()
+ *
+ * example:
+ *
+  // angle was calculated roughly from image, may need adjustment
+  var degree = 1.615;
+  var value = 1.615 * 100;
+ * setInstrumentPng('speed', 'needle', myWidgetAngle, 45, '200ms')
+ */
+function setInstrumentPng(instrumentName, indicatorName, degree, time) {
+  // lets play with the speed
+  var currentAngle = 0; 
+  var direction = 1;  // default positive
+
+  var obj = $('#instrument' + instrumentName + '_' + indicatorName);
+
+  if (obj.length > 0) {
+    obj.css('-webkit-transition', 'all ' + time + ' ease-in-out');
+    obj.css('-moz-transition', 'all ' + time + ' ease-in-out');
+    obj.css('-o-transition', 'all ' + time + ' ease-in-out');
+    obj.css('transition', 'all ' + time + ' ease-in-out');
+    
+    obj.css('-webkit-transform', 'rotate(' + degree + 'deg)');
+    obj.css('-moz-transform', 'rotate(' + degree + 'deg)');
+    obj.css('-o-transform', 'rotate(' + degree + 'deg)');
+    obj.css('transform', 'rotate(' + degree + 'deg)');
+  }
 }
 
 // shim layer with setTimeout fallback, originally by Paul Irish
@@ -573,7 +674,7 @@ function sendMessage() {
                 <img class="toolbarButtonImage" src="assets/icons/hal_off.svg" />
               </a>
               <a href=# id="toggleVideo" class="toolbarButton">
-                <img class="toolbarButtonImage" src="assets/icons/icon_video_off.svg" />
+                <img class="toolbarButtonImage" src="assets/icons/icon_video_off.png" />
               </a>
               <a href=# id="toggleSpeed" class="toolbarButton gaugeIconTitle">
                 <img class="toolbarButtonImage" src="assets/icons/icon_speed_off.svg" />

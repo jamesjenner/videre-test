@@ -173,6 +173,7 @@ a.toolbarButton {
 	-webkit-border-radius: 10px;
 	border-radius:10px;
 	text-align: center;
+	display: none;
 }
 
 div.gaugeIconTitle {
@@ -188,6 +189,41 @@ div.gaugeIconTitle {
 .gaugeImage {
         z-index: 250;
 }
+
+.gaugePng {
+        position: absolute;
+	top: 0;
+	left: 0;
+}
+
+.gaugeBackground {
+	z-index: 250;
+}
+
+.gaugeNeedle {
+	z-index: 251;
+}
+
+.gaugeNeedle1 {
+	z-index: 251;
+}
+
+.gaugeNeedle2 {
+	z-index: 252;
+}
+
+.gaugeNeedle3 {
+	z-index: 253;
+}
+
+.gaugeNeedle4 {
+	z-index: 254;
+}
+
+.gaugeForeground {
+	z-index: 260;
+}
+
 .gaugeDrag {
         position: absolute;
         left: 0;
