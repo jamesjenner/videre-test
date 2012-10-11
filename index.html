@@ -68,14 +68,7 @@ function touchHandler(event) {
 }
 
 var connected = false;
-var headingEnabled = false;
 var halEnabled = false;
-var attitudeEnabled = false;
-var altimeterEnabled = false;
-var barometerEnabled = false;
-var vsiEnabled = false;
-var thermometerEnabled = false;
-var speedEnabled = false;
 
 $(document).ready(function() {
   
@@ -108,6 +101,269 @@ $(document).ready(function() {
   });
 
 });
+
+// define gauges
+var videoGauge = new Gauge({name: 'video', title: 'Video', description: 'Live video feed',
+				 icon: 'assets/icons/drawable-xhdpi-v11/ic_stat_video.png',
+				 contentIsCanvas: true});
+var speedGauge = new Gauge({name: 'speed', title: 'Speed', description: 'Relative to surounding air',
+			         icon: 'assets/icons/drawable-xhdpi-v11/ic_stat_gauge.png',
+			         backgroundImg: 'assets/gauges/speed_background.png',
+			         foregroundImg: 'assets/gauges/speed_foreground.png',
+			         needleImg1: 'assets/gauges/speed_needle.png'
+			         });
+var attitudeGauge = new Gauge({name: 'attitude', title: 'Attitude', description: 'Orientation aroud the center of mass',
+			         icon: 'assets/icons/drawable-xhdpi-v11/ic_stat_gauge.png',
+			         foregroundImg: 'assets/gauges/attitude_foreground.png',
+			         needleImg1: 'assets/gauges/attitude_horizon.png',
+				 needleImg1Rotates: true,
+				 needleImg1VerticalScroll: true,
+				 needleImg1VerticalScrollType: 'relative',
+			         needleImg2: 'assets/gauges/attitude_needle2.png'
+			         });
+var altimeterGauge = new Gauge({name: 'altimeter', title: 'Altimeter', description: 'Altitude above mean sea level',
+			          icon: 'assets/icons/drawable-xhdpi-v11/ic_stat_gauge.png',
+			         backgroundImg: 'assets/gauges/altimeter_background.png',
+			         foregroundImg: 'assets/gauges/altimeter_foreground.png',
+			         needleImg1: 'assets/gauges/altimeter_large_needle.png',
+			         needleImg2: 'assets/gauges/altimeter_small_needle.png'
+			         });
+
+var headingGauge = new Gauge({name: 'heading', title: 'Heading', description: 'Direction in respect to magnetic north',
+			         icon: 'assets/icons/drawable-xhdpi-v11/ic_stat_compass.png',
+			         backgroundImg: 'assets/gauges/compass_background.png',
+			         needleImg1: 'assets/gauges/compass_needle.png'
+			         });
+				
+var vsiGauge = new Gauge({name: 'vsi', title: 'VSI', description: 'Vertical speed indicator',
+			         icon: 'assets/icons/drawable-xhdpi-v11/ic_stat_gauge.png',
+			         backgroundImg: 'assets/gauges/vsi_background.png',
+			         foregroundImg: 'assets/gauges/vsi_foreground.png',
+			         needleImg1: 'assets/gauges/vsi_needle.png'
+			         });
+				
+var thermometerGauge = new Gauge({name: 'thermometer', title: 'Thermometer', description: 'Engine tempurature',
+				 icon: 'assets/icons/drawable-xhdpi-v11/ic_stat_gauge.png',
+				 backgroundImg: 'assets/gauges/thermometer_background.png',
+				 foregroundImg: 'assets/gauges/thermometer_foreground.png',
+				 needleImg1: 'assets/gauges/thermometer_needle.png'
+				 });
+
+/*
+ * setGaugeAngle()
+ *
+ * example:
+ *
+  // angle was calculated roughly from image, may need adjustment
+  var degree = 1.615;
+  var value = 1.615 * 100;
+ * setInstrument('speed', 'needle', myWidgetAngle, 45, '200ms')
+ */
+function setGaugeAngle(gauge, indicatorName, degree, time) {
+  // lets play with the speed
+  var currentAngle = 0; 
+  var direction = 1;  // default positive
+
+  var obj = $('#instrument' + gauge.name + '_' + indicatorName);
+
+  if (obj.length > 0) {
+    obj.css('-webkit-transition', 'all ' + time + ' ease-in-out');
+    obj.css('-moz-transition', 'all ' + time + ' ease-in-out');
+    obj.css('-o-transition', 'all ' + time + ' ease-in-out');
+    obj.css('transition', 'all ' + time + ' ease-in-out');
+    
+    obj.css('-webkit-transform', 'rotate(' + degree + 'deg)');
+    obj.css('-moz-transform', 'rotate(' + degree + 'deg)');
+    obj.css('-o-transform', 'rotate(' + degree + 'deg)');
+    obj.css('transform', 'rotate(' + degree + 'deg)');
+  }
+}
+
+function enableHal() {
+  halEnabled = true;
+
+  // lets play with the direction
+  setGaugeAngle(headingGauge, 'needle1', 176, '2s');
+  setGaugeAngle(thermometerGauge, 'needle1', 90, '750ms');
+  setGaugeAngle(vsiGauge, 'needle1', 98, '1s');
+  setGaugeAngle(altimeterGauge, 'needle1', 45, '1s');
+  setGaugeAngle(altimeterGauge, 'needle2', 36, '1s');
+  setGaugeAngle(speedGauge, 'needle1', 45, '500ms');
+  
+  performVideoCountdown(videoGauge);
+}
+
+function disableHal() {
+  halEnabled = false;
+
+  setGaugeAngle(headingGauge, 'needle1', 0, '500ms');
+  setGaugeAngle(thermometerGauge, 'needle1', 0, '300ms');
+  setGaugeAngle(vsiGauge, 'needle1', 0, '300ms');
+  setGaugeAngle(altimeterGauge, 'needle1', 0, '300ms');
+  setGaugeAngle(altimeterGauge, 'needle2', 0, '300ms');
+  setGaugeAngle(speedGauge, 'needle1', 0, '300ms');
+
+  
+}
+
+function initialiseVideoCountdown(gauge) {
+}
+
+function performVideoCountdown(gauge) {
+  canvas = document.getElementById(gauge.canvasId);
+  ctx = canvas.getContext('2d');
+  canvas_size = [canvas.width, canvas.height];
+  radius = Math.min(canvas_size[0], canvas_size[1]) / 2;
+  center = [canvas_size[0]/2, canvas_size[1]/2];
+  start = 1;
+  fps = 40;
+  seconds = 2;
+  
+  var total = fps*seconds;
+  
+  for(var i=total;i>=0;i--) {
+    var delayed = (function(){
+      var step = 1-i/total;
+      var left = Math.ceil(i/fps);
+      
+      return function() {
+	// num.innerHTML=left;
+	draw_next(step);
+      };
+    })();
+    
+    setTimeout(delayed, -1000 / fps * (i-total));
+  }
+}
+
+function draw_next(step) { // step between 0 and 1
+  ctx.clearRect(0,0,canvas_size[0], canvas_size[1]);
+  
+  if(step < 1) {
+    ctx.beginPath();
+    ctx.moveTo(center[0], center[1]); // ponto central
+    
+    ctx.arc(  // draw next arc
+      center[0],
+      center[1],
+      radius,
+      Math.PI * (-0.5 + 0), // -0.5 pra começar do topo
+      Math.PI * (-0.5 + step*2),
+      true // anti horário
+      );
+    
+    ctx.lineTo(center[0], center[1]); // line back to the center
+    ctx.closePath();
+    
+    ctx.fillStyle = 'rgb(40,40,40)';    // color
+    
+    ctx.fill();
+  }
+}
+
+
+				 
+				 
+/*
+ * loadToolbar - loads the toolbar
+ */
+function loadToolbar() {
+  // TODO: determine how to handle adding a control for a gauge vs a non gauge toggling control. maybe seperate methods?
+  
+  /*
+   * TODO: maybe define a control that is icon, title and name, or is that redundant when it's incorporated into the Gauge?
+   * maybe the title and description should be removed from Gauge and added to a new type called Control.... Then the control
+   * could be linked to the gauge so it knows what it controls... 
+   */
+  
+  // TODO: load this information from remote source or from local storage...
+  
+  addControlToToolbar('toggleConnection',  'assets/icons/drawable-xhdpi-v11/ic_stat_power.png',   'Connection',  'Connectivity to the vehicle');
+  addControlToToolbar('toggleHal',         'assets/icons/drawable-xhdpi-v11/ic_stat_gauge.png',   'Hal 9000',    'Test to control guages');
+  
+  addControlToToolbar('toggle' + videoGauge.name, videoGauge.icon, videoGauge.title, videoGauge.description);
+
+  addControlToToolbar('toggle' + speedGauge.name, speedGauge.icon, speedGauge.title, speedGauge.description);
+  addControlToToolbar('toggle' + attitudeGauge.name, attitudeGauge.icon, attitudeGauge.title, attitudeGauge.description);
+  addControlToToolbar('toggle' + altimeterGauge.name, altimeterGauge.icon, altimeterGauge.title, altimeterGauge.description);
+  addControlToToolbar('toggle' + headingGauge.name, headingGauge.icon, headingGauge.title, headingGauge.description);
+  addControlToToolbar('toggle' + vsiGauge.name, vsiGauge.icon, vsiGauge.title, vsiGauge.description);
+  addControlToToolbar('toggle' + thermometerGauge.name, thermometerGauge.icon, thermometerGauge.title, thermometerGauge.description);
+
+  $('#toggleConnection').click(function() {
+    if(connected) {
+      disconnect();
+    } else {
+      connect();
+    }
+    return false;
+  });
+
+  $('#toggleHal').click(function() {
+    if(halEnabled) {
+      disableHal();
+      $('#toggleHal' + 'ControlArea').toggleClass('controlIconAreaSelected');
+    } else {
+      enableHal();
+      $('#toggleHal' + 'ControlArea').toggleClass('controlIconAreaSelected');
+    }
+    return false;
+  });
+
+  // define the function for toggling the gauge control
+  var toggleGaugeFn = function(gauge) {
+    if(gauge.enabled) {
+      gauge.enabled = !hideGauge(gauge.id);
+      $('#toggle' + gauge.name + 'ControlArea').toggleClass('controlIconAreaSelected');
+    } else {
+      gauge.enabled = showGauge(gauge);
+      $('#toggle'  + gauge.name + 'ControlArea').toggleClass('controlIconAreaSelected');
+    }
+    return false;
+  }
+  
+  $('#toggle' + videoGauge.name).click(function() {toggleGaugeFn(videoGauge)});
+  $('#toggle' + speedGauge.name).click(function() {toggleGaugeFn(speedGauge)});
+  $('#toggle' + attitudeGauge.name).click(function() {toggleGaugeFn(attitudeGauge)});
+  $('#toggle' + altimeterGauge.name).click(function() {toggleGaugeFn(altimeterGauge)});
+  $('#toggle' + headingGauge.name).click(function() {toggleGaugeFn(headingGauge)});
+  $('#toggle' + vsiGauge.name).click(function() {toggleGaugeFn(vsiGauge)});
+  $('#toggle' + thermometerGauge.name).click(function() {toggleGaugeFn(thermometerGauge)});
+}
+
+/*
+ * addControlToToolbar - adds a new control entry to the toolbar
+ *
+ * id      the id for the control
+ * icon    the icon representing the gaugue
+ * name    the name of the control
+ * subText a description of the control
+ */
+
+function addControlToToolbar(id, icon, name, subText) {
+  $('#toolbar').append(
+    '<div id="' + id + '" class="controlBar">' +
+    '  <div id="' + id + 'ControlArea" class="controlIconArea">' +
+    '    <img class="controlIcon" src="' + icon + '" />' +
+    '  </div>' +
+    '  <div class="controlText">' +
+    '    <div class="controlName">' +
+           name + 
+    '    </div>' +
+    '    <div class="controlSubText">' +
+           subText + 
+    '    </div>' +
+    '  </div>' +
+    /*
+    '  <div class="controlToggle">' +
+    '    <img class="controlToggleImage" src="assets/icons/drawable-xhdpi-v11/ic_stat_unlocked.png" />' +
+    '  </div>' +
+    '  <div class="controlToggle">' +
+    '    <img class="controlToggleImage" src="assets/icons/drawable-xhdpi-v11/ic_stat_hidden.png" />' +
+    '  </div>' +
+    */
+    '</div>');
+}
 
 var toolbarHidden = true;
 
@@ -153,31 +409,14 @@ function toolbarDisplay(direction, phase, distance) {
   }
 }
 
-function enableHal() {
-  halEnabled = true;
-
-  // lets play with the direction
-  setInstrument('heading', 'needle1', 176, '2s');
-  setInstrument('thermometer', 'needle1', 90, '750ms');
-  setInstrument('vsi', 'needle1', 98, '1s');
-  setInstrument('altimeter', 'needle1', 45, '1s');
-  setInstrument('altimeter', 'needle2', 36, '1s');
-  setInstrument('speed', 'needle1', 45, '500ms');
-}
-
-function disableHal() {
-  halEnabled = false;
-  
-}
-
 /*
- * showInstrumentPanel() displays a panel, creating it if it doesn't exist
+ * showGauge() displays a panel, creating it if it doesn't exist
  * 
  * gauge - the gauge to display
  *
  * returns true if the panel is sucessfully displayed
  */
-function showInstrumentPanel(gauge) {
+function showGauge(gauge) {
   // default values
   /* TODO: add in x, y so as to be able to set where it is when displaying for the first time
   panelWidth = (typeof optionalArg === "undefined") ? '100%' : panelWidth;
@@ -187,48 +426,55 @@ function showInstrumentPanel(gauge) {
   */
 
   // if the panel doesn't exist then add it
-  if ($('#' + gauge.panelId).length <= 0) {
+  if ($('#' + gauge.id).length <= 0) {
     // create the div with the appropriate images
 			    
     // NOTE: when not using img to load the svg, need to overlay a transparent div so drag'n'drop will still work, don't really need it here
     // TODO: check removing the drag div
     
-    var gaugeHTML =
+    var gaugeHTML = '';
+    
+    gaugeHTML +=
       '<div ' + 'id="' + gauge.id + '" class="viewPanel">';
       
-    // some gauges may not have a background
-    if(typeof gauge.backgroundImg != '') {
-      gaugeHTML += 
-      '<img id="instrument' + gauge.name + '_background" class="gaugePng gaugeBackground" src="' + gauge.backgroundImg + '" width="' + gauge.width + '" height="' + gauge.height + '" />';
-    }
-
-    // if the first needle is specified, then set
-    if(typeof gauge.needleImg1 != "undefined") {
-      gaugeHTML += 
-      '<img id="instrument' + gauge.name + '_needle1"    class="gaugePng gaugeNeedle"     src="' + gauge.needleImg1    + '" width="' + gauge.width + '" height="' + gauge.height + '" />';
+    if(gauge.contentIsCanvas) {
+      gaugeHTML +=
+	'<canvas id="' + gauge.canvasId + '" class="gaugeOverlay" width="' + gauge.width + '" height="' + gauge.height + '" >no Canvas for you</canvas>';
+    } else {
+      // some gauges may not have a background
+      if(typeof gauge.backgroundImg != "undefined") {
+	gaugeHTML += 
+	'<img id="instrument' + gauge.name + '_background" class="gaugeOverlay gaugeBackground" src="' + gauge.backgroundImg + '" width="' + gauge.width + '" height="' + gauge.height + '" />';
+      }
+  
+      // if the first needle is specified, then set
+      if(typeof gauge.needleImg1 != "undefined") {
+	gaugeHTML += 
+	'<img id="instrument' + gauge.name + '_needle1"    class="gaugeOverlay gaugeNeedle"     src="' + gauge.needleImg1    + '" width="' + gauge.width + '" height="' + gauge.height + '" />';
+      }
+	
+      // if the second needle is specified, then set
+      if(typeof gauge.needleImg2 != "undefined") {
+	gaugeHTML += 
+	'<img id="instrument' + gauge.name + '_needle2"    class="gaugeOverlay gaugeNeedle"     src="' + gauge.needleImg2    + '" width="' + gauge.width + '" height="' + gauge.height + '" />';
+      }
+	
+      // if the third needle is specified, then set
+      if(typeof gauge.needleImg3 != "undefined") {
+	gaugeHTML += 
+	'<img id="instrument' + gauge.name + '_needle3"    class="gaugeOverlay gaugeNeedle"     src="' + gauge.needleImg3    + '" width="' + gauge.width + '" height="' + gauge.height + '" />';
+      }
+	
+      if(typeof gauge.foregroundImg != "undefined") {
+	gaugeHTML += 
+	  '<img id="instrument' + gauge.name + '_foreground" class="gaugeOverlay gaugeForeground" src="' + gauge.foregroundImg + '" width="' + gauge.width + '" height="' + gauge.height + '" />';
+      }
     }
       
-    // if the second needle is specified, then set
-    if(typeof gauge.needleImg2 != "undefined") {
-      gaugeHTML += 
-      '<img id="instrument' + gauge.name + '_needle2"    class="gaugePng gaugeNeedle"     src="' + gauge.needleImg2    + '" width="' + gauge.width + '" height="' + gauge.height + '" />';
-    }
-      
-    // if the third needle is specified, then set
-    if(typeof gauge.needleImg3 != "undefined") {
-      gaugeHTML += 
-      '<img id="instrument' + gauge.name + '_needle3"    class="gaugePng gaugeNeedle"     src="' + gauge.needleImg3    + '" width="' + gauge.width + '" height="' + gauge.height + '" />';
-    }
-      
-    if(typeof gauge.foregroundImg != "undefined") {
-      gaugeHTML += 
-	'<img id="instrument' + gauge.name + '_foreground" class="gaugePng gaugeForeground" src="' + gauge.foregroundImg + '" width="' + gauge.width + '" height="' + gauge.height + '" />';
-    }
-
     gaugeHTML += 
       '<div id="gauge_' + gauge.name + 'Drag" class="gaugeDrag" width="' + gauge.width + '" height="' + gauge.height + '" />' +
       '</div>';
-      
+	
     $(document.body).append(gaugeHTML);
      
     panelElement = document.getElementById(gauge.id);
@@ -270,147 +516,40 @@ function showInstrumentPanel(gauge) {
 }
 
 /*
- * hideInstrumentPanel() - disables a panel based on a toggle control and uses SVG for the contents
+ * hideGauge() - disables a panel based on a toggle control and uses SVG for the contents
  *
- * panelId: the id for the panel that is being hidden
+ * gaugeId: the id for the gauge that is being hidden
  *
  * returns true if panel is hidden
  * 
  * Example:
- * speedEnabled = !hideInstrumentPanel("toggleSpeed", 'assets/icons/icon_speed_off.svg', 'speedPanel')
+ * speedEnabled = !hideGauge('speedPanel')
  */
-function hideInstrumentPanel(panelId) {
-  // hide the panel
+function hideGauge(gaugeId) {
+  // hide the panel for the gauge
   // todo: add animation
-  $('#' + panelId).hide();
+  $('#' + gaugeId).hide();
   
   return true;
 }
 
-/*
- * setInstrumentSVG()
- *
- * example:
- *
-  // angle was calculated roughly from image, may need adjustment
-  var degree = 1.615;
-  var value = 1.615 * 100;
- * setInstrumentSVG('speed', 'needle', myWidgetAngle, 45)
- */
-function setInstrumentSVG(panelId, needleId, newAngle) {
-  // lets play with the speed
-  var svg = document.querySelectorAll('#instrument' + panelId)[0].getSVGDocument().rootElement;
-  var needleGroup = svg.getElementById(needleId);
-  var currentAngle = 0; 
-  var direction = 1;  // default positive
-  
-  // reset the timer if it's running, we have a new value
-  /* using a setInterval...
-  if(timer !== null) {
-      clearInterval(timer);
-      timer = null;
-  }
-  */
-
-  if (needleGroup.transform.baseVal.numberOfItems > 0) {
-    currentAngle = needleGroup.transform.baseVal.getItem(needleGroup.transform.baseVal.numberOfItems - 1).angle;
-  }
-  
-      
-  // check if we need to go forward or backward
-  if (currentAngle <= newAngle) {
-    direction = 1;
-  } else {
-    direction = -1;
-  }
-  
-  if(currentAngle == newAngle) {
-    return;
-  }
-  
-  console.log("starting anim loop now");
-  // setup the animation loop
-  (function animloop() {
-      // console.log("render() should be done here and now");
-      var angle = 0;
-      
-      if (needleGroup.transform.baseVal.numberOfItems > 0) {
-	angle = needleGroup.transform.baseVal.getItem(needleGroup.transform.baseVal.numberOfItems - 1).angle;
-      }
-      
-      angle += direction;
-
-      
-      if(angle >= newAngle) {
-	// angle acheived, cancel the request anim frame
-	console.log("angle: " + angle + " new angle:" + newAngle + " canceling request: " + request);
-	cancelRequestAnimFrame(request);
-	return;
-      }
-      
-      if(angle >= 360) {
-	angle -= 360;
-      }
-      
-      if (needleGroup.transform.baseVal.numberOfItems === 0 || (needleGroup.transform.baseVal.numberOfItems == 1 && needleGroup.transform.baseVal.type === SVGTransform.SVG_TRANSFORM_MATRIX)) {
-	var transform = svg.createSVGTransform();
-	transform.setRotate(angle, parseFloat(svg.getAttribute('width')) / 2, parseFloat(svg.getAttribute('height')) / 2);
-	needleGroup.transform.baseVal.appendItem(transform);
-      } else {
-	needleGroup.transform.baseVal.getItem(needleGroup.transform.baseVal.numberOfItems - 1).setRotate(angle, parseFloat(svg.getAttribute('width')) / 2, parseFloat(svg.getAttribute('height')) / 2);
-      }
-      
-      request = requestAnimFrame(animloop, document.getElementsByTagName('body'));
-      
-      console.log("angle: " + angle + " new angle:" + newAngle + " request: " + request);
-     
-  })();
-  
-}
-
-/*
- * setInstrument()
- *
- * example:
- *
-  // angle was calculated roughly from image, may need adjustment
-  var degree = 1.615;
-  var value = 1.615 * 100;
- * setInstrument('speed', 'needle', myWidgetAngle, 45, '200ms')
- */
-function setInstrument(instrumentName, indicatorName, degree, time) {
-  // lets play with the speed
-  var currentAngle = 0; 
-  var direction = 1;  // default positive
-
-  var obj = $('#instrument' + instrumentName + '_' + indicatorName);
-
-  if (obj.length > 0) {
-    obj.css('-webkit-transition', 'all ' + time + ' ease-in-out');
-    obj.css('-moz-transition', 'all ' + time + ' ease-in-out');
-    obj.css('-o-transition', 'all ' + time + ' ease-in-out');
-    obj.css('transition', 'all ' + time + ' ease-in-out');
-    
-    obj.css('-webkit-transform', 'rotate(' + degree + 'deg)');
-    obj.css('-moz-transform', 'rotate(' + degree + 'deg)');
-    obj.css('-o-transform', 'rotate(' + degree + 'deg)');
-    obj.css('transform', 'rotate(' + degree + 'deg)');
-  }
-}
 
 // shim layer with setTimeout fallback, originally by Paul Irish
+/*
 window.requestAnimFrame = (function(){
     return  window.requestAnimationFrame   || 
         window.webkitRequestAnimationFrame || 
         window.mozRequestAnimationFrame    || 
         window.oRequestAnimationFrame      || 
         window.msRequestAnimationFrame     || 
-        function(/* function */ callback, /* DOMElement */ element){
+        function(callback, element){
             return window.setTimeout(callback, 1000 / 60);
         };
 })();
+*/
 
 // shim layer for cancel, derived from Paul Irish, by Jerome Etienne Notes
+/*
 window.cancelRequestAnimFrame = ( function() {
     return window.cancelAnimationFrame           ||
         window.webkitCancelRequestAnimationFrame ||
@@ -418,9 +557,9 @@ window.cancelRequestAnimFrame = ( function() {
         window.oCancelRequestAnimationFrame      ||
         window.msCancelRequestAnimationFrame     ||
         clearTimeout
-} )();  
+} )();
+*/
   
-
 /* connection logic for websockets */
 
 var connection = {};
@@ -507,149 +646,7 @@ function sendMessage() {
   connection.send(messageText);
 }
 
-// define gauges
-var videoGauge = new Gauge({name: 'video', title: 'Video', description: 'Live video feed',
-				 icon: 'assets/icons/drawable-xhdpi-v11/ic_stat_video.png'});
-var speedGauge = new Gauge({name: 'speed', title: 'Speed', description: 'Relative to surounding air',
-			         icon: 'assets/icons/drawable-xhdpi-v11/ic_stat_gauge.png',
-			         backgroundImg: 'assets/gauges/speed_background.png',
-			         foregroundImg: 'assets/gauges/speed_foreground.png',
-			         needleImg1: 'assets/gauges/speed_needle.png'
-			         });
-var attitudeGauge = new Gauge({name: 'attitude', title: 'Attitude', description: 'Orientation aroud the center of mass',
-			         icon: 'assets/icons/drawable-xhdpi-v11/ic_stat_gauge.png',
-			         foregroundImg: 'assets/gauges/attitude_foreground.png',
-			         needleImg1: 'assets/gauges/attitude_horizon.png',
-			         needleImg2: 'assets/gauges/attitude_needle2.png'
-			         });
-var altimeterGauge = new Gauge({name: 'altimeter', title: 'Altimeter', description: 'Altitude above mean sea level',
-			          icon: 'assets/icons/drawable-xhdpi-v11/ic_stat_gauge.png',
-			         backgroundImg: 'assets/gauges/altimeter_background.png',
-			         foregroundImg: 'assets/gauges/altimeter_foreground.png',
-			         needleImg1: 'assets/gauges/altimeter_large_needle.png',
-			         needleImg2: 'assets/gauges/altimeter_small_needle.png'
-			         });
 
-var headingGauge = new Gauge({name: 'heading', title: 'Heading', description: 'Direction in respect to magnetic north',
-			         icon: 'assets/icons/drawable-xhdpi-v11/ic_stat_compass.png',
-			         backgroundImg: 'assets/gauges/compass_background.png',
-			         needleImg1: 'assets/gauges/compass_needle.png'
-			         });
-				
-var vsiGauge = new Gauge({name: 'vsi', title: 'VSI', description: 'Vertical speed indicator',
-			         icon: 'assets/icons/drawable-xhdpi-v11/ic_stat_gauge.png',
-			         backgroundImg: 'assets/gauges/vsi_background.png',
-			         foregroundImg: 'assets/gauges/vsi_foreground.png',
-			         needleImg1: 'assets/gauges/vsi_needle.png'
-			         });
-				
-var thermometerGauge = new Gauge({name: 'thermometer', title: 'Thermometer', description: 'Engine tempurature',
-				 icon: 'assets/icons/drawable-xhdpi-v11/ic_stat_gauge.png',
-				 backgroundImg: 'assets/gauges/thermometer_background.png',
-				 foregroundImg: 'assets/gauges/thermometer_foreground.png',
-				 needleImg1: 'assets/gauges/thermometer_needle.png'
-				 });
-
-/*
- * loadToolbar - loads the toolbar
- */
-function loadToolbar() {
-  // TODO: determine how to handle adding a control for a gauge vs a non gauge toggling control. maybe seperate methods?
-  
-  /*
-   * TODO: maybe define a control that is icon, title and name, or is that redundant when it's incorporated into the Gauge?
-   * maybe the title and description should be removed from Gauge and added to a new type called Control.... Then the control
-   * could be linked to the gauge so it knows what it controls... 
-   */
-  
-  // TODO: load this information from remote source or from local storage...
-  
-  addControlToToolbar('toggleConnection',  'assets/icons/drawable-xhdpi-v11/ic_stat_power.png',   'Connection',  'Connectivity to the vehicle');
-  addControlToToolbar('toggleHal',         'assets/icons/drawable-xhdpi-v11/ic_stat_gauge.png',   'Hal 9000',    'Test to control guages');
-  
-  addControlToToolbar('toggle' + videoGauge.name, videoGauge.icon, videoGauge.title, videoGauge.description);
-
-  addControlToToolbar('toggle' + speedGauge.name, speedGauge.icon, speedGauge.title, speedGauge.description);
-  addControlToToolbar('toggle' + attitudeGauge.name, attitudeGauge.icon, attitudeGauge.title, attitudeGauge.description);
-  addControlToToolbar('toggle' + altimeterGauge.name, altimeterGauge.icon, altimeterGauge.title, altimeterGauge.description);
-  addControlToToolbar('toggle' + headingGauge.name, headingGauge.icon, headingGauge.title, headingGauge.description);
-  addControlToToolbar('toggle' + vsiGauge.name, vsiGauge.icon, vsiGauge.title, vsiGauge.description);
-  addControlToToolbar('toggle' + thermometerGauge.name, thermometerGauge.icon, thermometerGauge.title, thermometerGauge.description);
-
-  $('#toggleConnection').click(function() {
-    if(connected) {
-      disconnect();
-    } else {
-      connect();
-    }
-    return false;
-  });
-
-  $('#toggleHal').click(function() {
-    if(halEnabled) {
-      disableHal();
-      $('#toggleHal' + 'ControlArea').toggleClass('controlIconAreaSelected');
-    } else {
-      enableHal();
-      $('#toggleHal' + 'ControlArea').toggleClass('controlIconAreaSelected');
-    }
-    return false;
-  });
-
-  // define the function for toggling the gauge control
-  var toggleGaugeFn = function(gauge) {
-    if(gauge.enabled) {
-      gauge.enabled = !hideInstrumentPanel(gauge.id);
-      $('#toggle' + gauge.name + 'ControlArea').toggleClass('controlIconAreaSelected');
-    } else {
-      gauge.enabled = showInstrumentPanel(gauge);
-      $('#toggle'  + gauge.name + 'ControlArea').toggleClass('controlIconAreaSelected');
-    }
-    return false;
-  }
-  
-  $('#toggle' + videoGauge.name).click(function() {toggleGaugeFn(videoGauge)});
-  $('#toggle' + speedGauge.name).click(function() {toggleGaugeFn(speedGauge)});
-  $('#toggle' + attitudeGauge.name).click(function() {toggleGaugeFn(attitudeGauge)});
-  $('#toggle' + altimeterGauge.name).click(function() {toggleGaugeFn(altimeterGauge)});
-  $('#toggle' + headingGauge.name).click(function() {toggleGaugeFn(headingGauge)});
-  $('#toggle' + vsiGauge.name).click(function() {toggleGaugeFn(vsiGauge)});
-  $('#toggle' + thermometerGauge.name).click(function() {toggleGaugeFn(thermometerGauge)});
-}
-
-/*
- * addControlToToolbar - adds a new control entry to the toolbar
- *
- * id      the id for the control
- * icon    the icon representing the gaugue
- * name    the name of the control
- * subText a description of the control
- */
-
-function addControlToToolbar(id, icon, name, subText) {
-  $('#toolbar').append(
-    '<div id="' + id + '" class="controlBar">' +
-    '  <div id="' + id + 'ControlArea" class="controlIconArea">' +
-    '    <img class="controlIcon" src="' + icon + '" />' +
-    '  </div>' +
-    '  <div class="controlText">' +
-    '    <div class="controlName">' +
-           name + 
-    '    </div>' +
-    '    <div class="controlSubText">' +
-           subText + 
-    '    </div>' +
-    '  </div>' +
-    /*
-    '  <div class="controlToggle">' +
-    '    <img class="controlToggleImage" src="assets/icons/drawable-xhdpi-v11/ic_stat_unlocked.png" />' +
-    '  </div>' +
-    '  <div class="controlToggle">' +
-    '    <img class="controlToggleImage" src="assets/icons/drawable-xhdpi-v11/ic_stat_hidden.png" />' +
-    '  </div>' +
-    */
-    '</div>');
-}
 
 
 </script>
