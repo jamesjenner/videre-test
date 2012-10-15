@@ -277,6 +277,7 @@ a.toolbarButton {
 	border-radius:10px;
 	text-align: center;
 	display: none;
+	overflow: hidden;
 }
 
 div.gaugeIconTitle {

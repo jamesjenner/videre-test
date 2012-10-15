@@ -43,14 +43,26 @@ var Gauge = function (argmap) {
     if('foregroundImg' in argmap) {
         this.foregroundImg = argmap.foregroundImg;
     }
-    if('foregroundImgClips' in argmap) {
-        this.foregroundImgClips = argmap.foregroundImgClips;
+    if('foregroundHeight' in argmap) {
+        this.foregroundHeight = argmap.foregroundHeight;
+    } else {
+        this.foregroundHeight = this.height;
+    }
+    if('foregroundClips' in argmap) {
+        this.foregroundClips = argmap.foregroundClips;
     } else {
         this.foregroundImgClips = false;
+    }    if('dialImg' in argmap) {
+        this.dialImg = argmap.dialImg;
     }
     // make needle a sub type with it's own properties?
     if('needleImg1' in argmap) {
         this.needleImg1 = argmap.needleImg1;
+    }
+    if('needleImg1XOffset' in argmap) {
+        this.needleImg1XOffset = argmap.needleImg1XOffset;
+    } else {
+        needleImg1XOffset = '0px';
     }
     if('needleImg1Rotates' in argmap) {
         this.needleImg1Rotates = argmap.needleImg1Rotates;
@@ -66,6 +78,11 @@ var Gauge = function (argmap) {
         this.needleImg1VerticalScrollType = argmap.needleImg1VerticalScrollType;
     } else {
         this.needleImg1VerticalScrollType = 'fixed';
+    }
+    if('needleImg1Height' in argmap) {
+        this.needleImg1Height = argmap.needleImg1Height;
+    } else {
+        this.needleImg1Height = this.height;
     }
     if('needleImg2' in argmap) {
         this.needleImg2 = argmap.needleImg2;
@@ -83,6 +100,9 @@ var Gauge = function (argmap) {
     } else {
         this.needleImg3Rotates = true;
     }
+    if('overlayImg' in argmap) {
+        this.overlayImg = argmap.overlayImg;
+    }
     if('icon' in argmap) {
         this.icon = argmap.icon;
     }
@@ -92,6 +112,9 @@ var Gauge = function (argmap) {
         this.contentIsCanvas = argmap.contentIsCanvas;
     } else {
         this.contentIsCanvas = false;
+    }
+    if('mask' in argmap) {
+        this.mask = argmap.mask;
     }
 }
     

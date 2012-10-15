@@ -108,45 +108,55 @@ var videoGauge = new Gauge({name: 'video', title: 'Video', description: 'Live vi
 				 contentIsCanvas: true});
 var speedGauge = new Gauge({name: 'speed', title: 'Speed', description: 'Relative to surounding air',
 			         icon: 'assets/icons/drawable-xhdpi-v11/ic_stat_gauge.png',
-			         backgroundImg: 'assets/gauges/speed_background.png',
-			         foregroundImg: 'assets/gauges/speed_foreground.png',
-			         needleImg1: 'assets/gauges/speed_needle.png'
+			         backgroundImg: 'assets/gauges/gauge_base_s.png',
+			         dialImg: 'assets/gauges/speed_background_s.png',
+			         needleImg1: 'assets/gauges/speed_needle.png',
+			         foregroundImg: 'assets/gauges/gauge_needle_cap_s.png'
 			         });
 var attitudeGauge = new Gauge({name: 'attitude', title: 'Attitude', description: 'Orientation aroud the center of mass',
 			         icon: 'assets/icons/drawable-xhdpi-v11/ic_stat_gauge.png',
-			         foregroundImg: 'assets/gauges/attitude_foreground.png',
-			         needleImg1: 'assets/gauges/attitude_horizon.png',
+			         overlayImg: 'assets/gauges/attitude_foreground_s.png',
+			         foregroundImg: 'assets/gauges/gauge_base_plate_s.png',
+				 foregroundClips: true,
+			         needleImg1: 'assets/gauges/attitude_horizon_s.png',
 				 needleImg1Rotates: true,
 				 needleImg1VerticalScroll: true,
 				 needleImg1VerticalScrollType: 'relative',
-			         needleImg2: 'assets/gauges/attitude_needle2.png'
+				 needleImg1XOffset: '-161px',
+				 needleImg1Height: '830px',
+			         needleImg2: 'assets/gauges/attitude_needle_s.png',
+				 mask: 'assets/gauges/gauge_base_mask_s.png'
 			         });
 var altimeterGauge = new Gauge({name: 'altimeter', title: 'Altimeter', description: 'Altitude above mean sea level',
 			          icon: 'assets/icons/drawable-xhdpi-v11/ic_stat_gauge.png',
-			         backgroundImg: 'assets/gauges/altimeter_background.png',
-			         foregroundImg: 'assets/gauges/altimeter_foreground.png',
-			         needleImg1: 'assets/gauges/altimeter_large_needle.png',
-			         needleImg2: 'assets/gauges/altimeter_small_needle.png'
+			         backgroundImg: 'assets/gauges/gauge_base_s.png',
+			         dialImg: 'assets/gauges/altimeter_background_s.png',
+			         needleImg1: 'assets/gauges/altimeter_large_needle_s.png',
+			         needleImg2: 'assets/gauges/altimeter_small_needle_s.png',
+			         foregroundImg: 'assets/gauges/gauge_needle_cap_s.png'
 			         });
 
 var headingGauge = new Gauge({name: 'heading', title: 'Heading', description: 'Direction in respect to magnetic north',
 			         icon: 'assets/icons/drawable-xhdpi-v11/ic_stat_compass.png',
-			         backgroundImg: 'assets/gauges/compass_background.png',
-			         needleImg1: 'assets/gauges/compass_needle.png'
+			         backgroundImg: 'assets/gauges/gauge_base_s.png',
+			         dialImg: 'assets/gauges/compass_background_s.png',
+			         needleImg1: 'assets/gauges/compass_needle_s.png'
 			         });
 				
 var vsiGauge = new Gauge({name: 'vsi', title: 'VSI', description: 'Vertical speed indicator',
 			         icon: 'assets/icons/drawable-xhdpi-v11/ic_stat_gauge.png',
-			         backgroundImg: 'assets/gauges/vsi_background.png',
-			         foregroundImg: 'assets/gauges/vsi_foreground.png',
-			         needleImg1: 'assets/gauges/vsi_needle.png'
+			         backgroundImg: 'assets/gauges/gauge_base_s.png',
+			         dialImg: 'assets/gauges/vsi_background_s.png',
+			         needleImg1: 'assets/gauges/vsi_needle_s.png',
+			         foregroundImg: 'assets/gauges/gauge_needle_cap_s.png'
 			         });
 				
 var thermometerGauge = new Gauge({name: 'thermometer', title: 'Thermometer', description: 'Engine tempurature',
 				 icon: 'assets/icons/drawable-xhdpi-v11/ic_stat_gauge.png',
-				 backgroundImg: 'assets/gauges/thermometer_background.png',
-				 foregroundImg: 'assets/gauges/thermometer_foreground.png',
-				 needleImg1: 'assets/gauges/thermometer_needle.png'
+			         backgroundImg: 'assets/gauges/gauge_base_s.png',
+				 dialImg: 'assets/gauges/thermometer_background_s.png',
+				 needleImg1: 'assets/gauges/thermometer_needle_s.png',
+				 foregroundImg: 'assets/gauges/gauge_needle_cap_s.png'
 				 });
 
 /*
@@ -171,11 +181,45 @@ function setGaugeAngle(gauge, indicatorName, degree, time) {
     obj.css('-moz-transition', 'all ' + time + ' ease-in-out');
     obj.css('-o-transition', 'all ' + time + ' ease-in-out');
     obj.css('transition', 'all ' + time + ' ease-in-out');
+
+    origin = '50% 50%';
+    obj.css('-webkit-transform-origin', origin);
+    obj.css('-moz-transform-origin', origin);
+    obj.css('-o-transform-origin', origin);
+    obj.css('transform-origin', origin);
+
     
     obj.css('-webkit-transform', 'rotate(' + degree + 'deg)');
     obj.css('-moz-transform', 'rotate(' + degree + 'deg)');
     obj.css('-o-transform', 'rotate(' + degree + 'deg)');
     obj.css('transform', 'rotate(' + degree + 'deg)');
+  }
+}
+
+function setGauge(gauge, indicatorName, degree, value, time) {
+  // lets play with the speed
+  var currentAngle = 0; 
+  var direction = 1;  // default positive
+
+  var obj = $('#instrument' + gauge.name + '_' + indicatorName);
+
+  if (obj.length > 0) {
+    obj.css('-webkit-transition', 'all ' + time + ' ease-in-out');
+    obj.css('-moz-transition', 'all ' + time + ' ease-in-out');
+    obj.css('-o-transition', 'all ' + time + ' ease-in-out');
+    obj.css('transition', 'all ' + time + ' ease-in-out');
+
+    origin = '50% 50%';
+    obj.css('-webkit-transform-origin', origin);
+    obj.css('-moz-transform-origin', origin);
+    obj.css('-o-transform-origin', origin);
+    obj.css('transform-origin', origin);
+
+    
+    obj.css('-webkit-transform', 'rotate(' + degree + 'deg) translate(0px, ' + value + ')');
+    obj.css('-moz-transform', 'rotate(' + degree + 'deg) translate(0px, ' + value + ')');
+    obj.css('-o-transform', 'rotate(' + degree + 'deg) translate(0px, ' + value + ')');
+    obj.css('transform', 'rotate(' + degree + 'deg) translate(0px, ' + value + ')');
   }
 }
 
@@ -189,6 +233,9 @@ function enableHal() {
   setGaugeAngle(altimeterGauge, 'needle1', 45, '1s');
   setGaugeAngle(altimeterGauge, 'needle2', 36, '1s');
   setGaugeAngle(speedGauge, 'needle1', 45, '500ms');
+
+  setGaugeAngle(attitudeGauge, 'needle2', 45, '750ms');
+  setGauge(attitudeGauge, 'needle1', 45, '25px', '750ms');
   
   performVideoCountdown(videoGauge);
 }
@@ -203,6 +250,8 @@ function disableHal() {
   setGaugeAngle(altimeterGauge, 'needle2', 0, '300ms');
   setGaugeAngle(speedGauge, 'needle1', 0, '300ms');
 
+  setGaugeAngle(attitudeGauge, 'needle2', -45, '750ms');
+  setGauge(attitudeGauge, 'needle1', -45, '-25px', '750ms');
   
 }
 
@@ -269,7 +318,11 @@ function draw_next(step) { // step between 0 and 1
  */
 function loadToolbar() {
   // TODO: determine how to handle adding a control for a gauge vs a non gauge toggling control. maybe seperate methods?
-  
+  /**
+   * for (var i=0; i < obj.length; i++) {
+    
+   }
+   */
   /*
    * TODO: maybe define a control that is icon, title and name, or is that redundant when it's incorporated into the Gauge?
    * maybe the title and description should be removed from Gauge and added to a new type called Control.... Then the control
@@ -433,10 +486,10 @@ function showGauge(gauge) {
     // TODO: check removing the drag div
     
     var gaugeHTML = '';
-    
+
     gaugeHTML +=
       '<div ' + 'id="' + gauge.id + '" class="viewPanel">';
-      
+    
     if(gauge.contentIsCanvas) {
       gaugeHTML +=
 	'<canvas id="' + gauge.canvasId + '" class="gaugeOverlay" width="' + gauge.width + '" height="' + gauge.height + '" >no Canvas for you</canvas>';
@@ -446,11 +499,24 @@ function showGauge(gauge) {
 	gaugeHTML += 
 	'<img id="instrument' + gauge.name + '_background" class="gaugeOverlay gaugeBackground" src="' + gauge.backgroundImg + '" width="' + gauge.width + '" height="' + gauge.height + '" />';
       }
+
+      // add the dial image
+      if(typeof gauge.dialImg != "undefined") {
+	gaugeHTML += 
+	'<img id="instrument' + gauge.name + '_dial" class="gaugeOverlay gaugeBackground" src="' + gauge.dialImg + '" width="' + gauge.width + '" height="' + gauge.height + '" />';
+      }
   
       // if the first needle is specified, then set
       if(typeof gauge.needleImg1 != "undefined") {
+	if(typeof gauge.needleImg1XOffset != "undefined") {
 	gaugeHTML += 
-	'<img id="instrument' + gauge.name + '_needle1"    class="gaugeOverlay gaugeNeedle"     src="' + gauge.needleImg1    + '" width="' + gauge.width + '" height="' + gauge.height + '" />';
+	//'<img id="instrument' + gauge.name + '_needle1"    class="gaugeOverlay gaugeNeedle"     src="' + gauge.needleImg1    + '" width="' + gauge.width + '" height="' + gauge.needleImg1Height + '" />';
+	'<img id="instrument' + gauge.name + '_needle1"    class="gaugeOverlay gaugeNeedle"     src="' + gauge.needleImg1    + '" width="' + gauge.width + '" style="top: ' + gauge.needleImg1XOffset + '"/>';
+	} else {
+	gaugeHTML += 
+	//'<img id="instrument' + gauge.name + '_needle1"    class="gaugeOverlay gaugeNeedle"     src="' + gauge.needleImg1    + '" width="' + gauge.width + '" height="' + gauge.needleImg1Height + '" />';
+	'<img id="instrument' + gauge.name + '_needle1"    class="gaugeOverlay gaugeNeedle"     src="' + gauge.needleImg1    + '" width="' + gauge.width + '" />';
+	}
       }
 	
       // if the second needle is specified, then set
@@ -464,10 +530,15 @@ function showGauge(gauge) {
 	gaugeHTML += 
 	'<img id="instrument' + gauge.name + '_needle3"    class="gaugeOverlay gaugeNeedle"     src="' + gauge.needleImg3    + '" width="' + gauge.width + '" height="' + gauge.height + '" />';
       }
+
+      if(typeof gauge.overlayImg != "undefined") {
+	gaugeHTML += 
+	  '<img id="instrument' + gauge.name + '_overlay" class="gaugeOverlay gaugeForeground" src="' + gauge.overlayImg + '" width="' + gauge.width + '" height="' + gauge.height + '" />';
+      }
 	
       if(typeof gauge.foregroundImg != "undefined") {
 	gaugeHTML += 
-	  '<img id="instrument' + gauge.name + '_foreground" class="gaugeOverlay gaugeForeground" src="' + gauge.foregroundImg + '" width="' + gauge.width + '" height="' + gauge.height + '" />';
+	  '<img id="instrument' + gauge.name + '_foreground" class="gaugeOverlay gaugeForeground" src="' + gauge.foregroundImg + '" width="' + gauge.width + '" height="' + gauge.foregroundHeight + '" />';
       }
     }
       
@@ -476,6 +547,10 @@ function showGauge(gauge) {
       '</div>';
 	
     $(document.body).append(gaugeHTML);
+     
+    if(typeof gauge.mask != "undefined") {
+      $('#' + gauge.id).css('-webkit-mask-image', 'url(' + gauge.mask + ')');
+    }
      
     panelElement = document.getElementById(gauge.id);
       
@@ -533,8 +608,39 @@ function hideGauge(gaugeId) {
   return true;
 }
 
+// shim with requestAnimationFrame/cancelAnimationFrame - sourced from http://creativejs.com/resources/requestanimationframe/
+// requestAnimationFrame polyfill by Erik Möller
+// fixes from Paul Irish and Tino Zijdel
+
+// TODO: which is better, this or the Paul Irish/Jerome Etienne Notes one?
+(function() {
+    var lastTime = 0;
+    var vendors = ['ms', 'moz', 'webkit', 'o'];
+    for(var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
+        window.requestAnimationFrame = window[vendors[x]+'RequestAnimationFrame'];
+        window.cancelAnimationFrame = window[vendors[x]+'CancelAnimationFrame'] 
+                                   || window[vendors[x]+'CancelRequestAnimationFrame'];
+    }
+ 
+    if (!window.requestAnimationFrame)
+        window.requestAnimationFrame = function(callback, element) {
+            var currTime = new Date().getTime();
+            var timeToCall = Math.max(0, 16 - (currTime - lastTime));
+            var id = window.setTimeout(function() { callback(currTime + timeToCall); }, 
+              timeToCall);
+            lastTime = currTime + timeToCall;
+            return id;
+        };
+ 
+    if (!window.cancelAnimationFrame)
+        window.cancelAnimationFrame = function(id) {
+            clearTimeout(id);
+        };
+}());
+
 
 // shim layer with setTimeout fallback, originally by Paul Irish
+// http://paulirish.com/2011/requestanimationframe-for-smart-animating/
 /*
 window.requestAnimFrame = (function(){
     return  window.requestAnimationFrame   || 

@@ -21,7 +21,10 @@
    height="311.811px"
    viewBox="0 0 311.811 311.811"
    enable-background="new 0 0 311.811 311.811"
-   xml:space="preserve"><defs
+   xml:space="preserve"
+   inkscape:export-filename="/home/james/devel/git-hub/videre-test/assets/gauges/compass_background_s2.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90"><defs
    id="defs390"><linearGradient
    inkscape:collect="always"
    xlink:href="#path5257_1_"
@@ -242,6 +245,15 @@
    x1="251.3174"
    y1="-578.8215"
    x2="43.5334"
+   y2="-218.9289" /><linearGradient
+   inkscape:collect="always"
+   xlink:href="#path5246_1_"
+   id="linearGradient3427"
+   gradientUnits="userSpaceOnUse"
+   gradientTransform="matrix(1,0,0,-1,8.48,-242.9702)"
+   x1="251.3174"
+   y1="-578.8215"
+   x2="43.5334"
    y2="-218.9289" /></defs><sodipodi:namedview
    pagecolor="#ffffff"
    bordercolor="#666666"
@@ -256,12 +268,12 @@
    id="namedview388"
    showgrid="false"
    inkscape:zoom="0.75686873"
-   inkscape:cx="77.952751"
+   inkscape:cx="-77.952752"
    inkscape:cy="155.9055"
    inkscape:window-x="451"
    inkscape:window-y="202"
    inkscape:window-maximized="0"
-   inkscape:current-layer="needle" />
+   inkscape:current-layer="layer1" />
 <metadata
    id="metadata3">
 	<ns:sfw>
@@ -275,7 +287,7 @@
 	</ns:sfw>
 <rdf:RDF><cc:Work
      rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
-       rdf:resource="http://purl.org/dc/dcmitype/StillImage" /></cc:Work></rdf:RDF></metadata>
+       rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title></dc:title></cc:Work></rdf:RDF></metadata>
 
 <g
    inkscape:groupmode="layer"
@@ -283,11 +295,11 @@
    inkscape:label="Background"
    style="display:inline"
    sodipodi:insensitive="true"><g
-     id="g3783"><path
+     id="g3599"><path
        id="path5246"
        inkscape:connector-curvature="0"
        d="m 311.81,297.638 c 0,7.825 -6.346,14.172 -14.172,14.172 H 14.174 C 6.346,311.81 0,305.464 0,297.638 V 14.174 C 0,6.347 6.346,0.001 14.174,0.001 h 283.464 c 7.827,0 14.173,6.347 14.173,14.173 l -10e-4,283.464 0,0 z"
-       style="fill:url(#linearGradient3775)" /><g
+       style="fill:url(#linearGradient3427)" /><g
        id="g5248">
 		<path
    id="path5250"
@@ -426,11 +438,11 @@
 				</linearGradient>
 				<polygon
    id="polygon5292"
-   points="13.626,17.006 15.317,14.078 18.698,14.078 20.389,17.006 18.698,19.935 15.317,19.935 "
+   points="18.698,19.935 15.317,19.935 13.626,17.006 15.317,14.078 18.698,14.078 20.389,17.006 "
    style="fill:url(#linearGradient3563)" />
 				<polygon
    id="polygon5294"
-   points="13.897,17.006 15.452,14.312 18.563,14.312 20.119,17.006 18.563,19.701 15.452,19.701 " />
+   points="18.563,19.701 15.452,19.701 13.897,17.006 15.452,14.312 18.563,14.312 20.119,17.006 " />
 			</g>
 		</g>
 	</g><g
@@ -538,11 +550,11 @@
 				</linearGradient>
 				<polygon
    id="polygon5329"
-   points="291.422,17.006 293.112,14.078 296.494,14.078 298.186,17.006 296.494,19.935 293.112,19.935 "
+   points="296.494,19.935 293.112,19.935 291.422,17.006 293.112,14.078 296.494,14.078 298.186,17.006 "
    style="fill:url(#linearGradient3569)" />
 				<polygon
    id="polygon5331"
-   points="291.692,17.006 293.248,14.312 296.358,14.312 297.914,17.006 296.358,19.701 293.248,19.701 " />
+   points="296.358,19.701 293.248,19.701 291.692,17.006 293.248,14.312 296.358,14.312 297.914,17.006 " />
 			</g>
 		</g>
 	</g><g
@@ -650,11 +662,11 @@
 				</linearGradient>
 				<polygon
    id="polygon5366"
-   points="291.421,294.803 293.112,291.874 296.493,291.874 298.185,294.803 296.493,297.73 293.112,297.73 "
+   points="296.493,297.73 293.112,297.73 291.421,294.803 293.112,291.874 296.493,291.874 298.185,294.803 "
    style="fill:url(#linearGradient3575)" />
 				<polygon
    id="polygon5368"
-   points="291.692,294.803 293.247,292.107 296.358,292.107 297.913,294.803 296.358,297.496 293.247,297.496 " />
+   points="296.358,297.496 293.247,297.496 291.692,294.803 293.247,292.107 296.358,292.107 297.913,294.803 " />
 			</g>
 		</g>
 	</g><g
@@ -762,11 +774,11 @@
 				</linearGradient>
 				<polygon
    id="polygon5403"
-   points="13.626,294.803 15.318,291.874 18.699,291.874 20.39,294.803 18.699,297.73 15.318,297.73 "
+   points="18.699,297.73 15.318,297.73 13.626,294.803 15.318,291.874 18.699,291.874 20.39,294.803 "
    style="fill:url(#linearGradient3581)" />
 				<polygon
    id="polygon5405"
-   points="13.898,294.803 15.453,292.107 18.564,292.107 20.119,294.803 18.564,297.496 15.453,297.496 " />
+   points="18.564,297.496 15.453,297.496 13.898,294.803 15.453,292.107 18.564,292.107 20.119,294.803 " />
 			</g>
 		</g>
 	</g><g
@@ -856,8 +868,15 @@
    r="143.149"
    style="fill:url(#radialGradient3587)">
 		</circle>
-	</g><g
-       id="g142">
+	</g></g></g><g
+   inkscape:groupmode="layer"
+   id="layer2"
+   inkscape:label="dial"
+   style="display:inline"
+   sodipodi:insensitive="true"><g
+     id="g3513"><g
+       id="g142"
+       style="display:inline">
 		<line
    x1="165.164"
    y1="131.423"
@@ -874,7 +893,8 @@
    style="fill:#f8b133" />
 		</g>
 	</g><g
-       id="g150">
+       id="g150"
+       style="display:inline">
 		<line
    x1="207.32899"
    y1="169.78999"
@@ -891,7 +911,8 @@
    style="fill:#f8b133" />
 		</g>
 	</g><g
-       id="g158">
+       id="g158"
+       style="display:inline">
 		<line
    x1="207.32899"
    y1="184.839"
@@ -908,7 +929,8 @@
    style="fill:#f8b133" />
 		</g>
 	</g><g
-       id="g166">
+       id="g166"
+       style="display:inline">
 		<line
    x1="165.33"
    y1="162.757"
@@ -925,7 +947,8 @@
    style="fill:#f8b133" />
 		</g>
 	</g><g
-       id="g174">
+       id="g174"
+       style="display:inline">
 		<line
    x1="163.16499"
    y1="201.72501"
@@ -942,7 +965,8 @@
    style="fill:#f8b133" />
 		</g>
 	</g><g
-       id="g182">
+       id="g182"
+       style="display:inline">
 		<line
    x1="179.185"
    y1="215.58099"
@@ -959,7 +983,8 @@
    style="fill:#f8b133" />
 		</g>
 	</g><g
-       id="g190">
+       id="g190"
+       style="display:inline">
 		<line
    x1="179.185"
    y1="230.735"
@@ -976,7 +1001,8 @@
    style="fill:#f8b133" />
 		</g>
 	</g><g
-       id="g198">
+       id="g198"
+       style="display:inline">
 		<line
    x1="160.55"
    y1="219.04401"
@@ -993,7 +1019,8 @@
    style="fill:#f8b133" />
 		</g>
 	</g><g
-       id="g206">
+       id="g206"
+       style="display:inline">
 		<line
    x1="155.65199"
    y1="223.15601"
@@ -1010,7 +1037,8 @@
    style="fill:#f8b133" />
 		</g>
 	</g><g
-       id="g214">
+       id="g214"
+       style="display:inline">
 		<line
    x1="151.47301"
    y1="219.04401"
@@ -1027,7 +1055,8 @@
    style="fill:#f8b133" />
 		</g>
 	</g><g
-       id="g222">
+       id="g222"
+       style="display:inline">
 		<line
    x1="131.556"
    y1="230.735"
@@ -1044,7 +1073,8 @@
    style="fill:#f8b133" />
 		</g>
 	</g><g
-       id="g230">
+       id="g230"
+       style="display:inline">
 		<line
    x1="131.556"
    y1="215.58099"
@@ -1061,7 +1091,8 @@
    style="fill:#f8b133" />
 		</g>
 	</g><g
-       id="g238">
+       id="g238"
+       style="display:inline">
 		<line
    x1="148.44299"
    y1="199.995"
@@ -1078,7 +1109,8 @@
    style="fill:#f8b133" />
 		</g>
 	</g><g
-       id="g246">
+       id="g246"
+       style="display:inline">
 		<line
    x1="145.84399"
    y1="162.757"
@@ -1095,7 +1127,8 @@
    style="fill:#f8b133" />
 		</g>
 	</g><g
-       id="g254">
+       id="g254"
+       style="display:inline">
 		<line
    x1="103.412"
    y1="184.839"
@@ -1112,7 +1145,8 @@
    style="fill:#f8b133" />
 		</g>
 	</g><g
-       id="g262">
+       id="g262"
+       style="display:inline">
 		<line
    x1="103.412"
    y1="169.78999"
@@ -1129,7 +1163,8 @@
    style="fill:#f8b133" />
 		</g>
 	</g><g
-       id="g270">
+       id="g270"
+       style="display:inline">
 		<line
    x1="162.147"
    y1="105.551"
@@ -1146,7 +1181,8 @@
    style="fill:#f8b133" />
 		</g>
 	</g><g
-       id="g278">
+       id="g278"
+       style="display:inline">
 		<line
    x1="145.84399"
    y1="131.58099"
@@ -1163,7 +1199,8 @@
    style="fill:#f8b133" />
 		</g>
 	</g><g
-       id="g286">
+       id="g286"
+       style="display:inline">
 		<line
    x1="155.65199"
    y1="92.639999"
@@ -1180,7 +1217,8 @@
    style="fill:#f8b133" />
 		</g>
 	</g><g
-       id="g294">
+       id="g294"
+       style="display:inline">
 		<line
    x1="155.65199"
    y1="92.639999"
@@ -1197,7 +1235,8 @@
    style="fill:#f8b133" />
 		</g>
 	</g><g
-       id="g302">
+       id="g302"
+       style="display:inline">
 		<line
    x1="155.65199"
    y1="66.404999"
